@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <title>RAMPAGE!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/socketio.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/vendor/virtualjoystick.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
+    </head>
+    <body>
+        <h1>Hi, I'm Dubois.</h1>
+	<h4>Created by his excellency, Efe ;)</h4>
+        <button id='forward-button'>Forward</button>
+        <button id='backward-button'>Backward</button>
+        <button id='left-button'>Left</button>
+        <button id='right-button'>Right</button>
+        <div id='joystick-area' style='width: 100%; height: 100%'></div>
+    </body>
+</html>
