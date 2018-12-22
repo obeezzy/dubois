@@ -58,7 +58,7 @@ Coming soon.
 
 # Hardware Architecture
 ### Circuit Diagram
-![Circuit diagram](https://www.github.com/obeezzy/dubois/docs/images/v0.1.0.png)
+![Circuit diagram](https://github.com/obeezzy/dubois/blob/master/docs/images/v0.1.0.png)
 
 ### Parts List
 You will need the [Actobotics Peewee Runt Rover Kit](https://www.microcenter.com/product/449366/peewee-runt-rover-kit) or its equivalent. It's basically any kit that can stand on two wheels and has two motors. The components associated with diagram are listed below.
