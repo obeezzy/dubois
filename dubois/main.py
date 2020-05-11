@@ -36,6 +36,7 @@ def move_backward(message):
 def move_clockwise(message):
     print('Move clockwise', message)
     if message['activated']:
+        pass
         locomotionControl.move_clockwise()
     else:
         locomotionControl.stop()
@@ -44,6 +45,7 @@ def move_clockwise(message):
 def move_counterclockwise(message):
     print('Move counterclockwise', message)
     if message['activated']:
+        pass
         locomotionControl.move_counterclockwise()
     else:
         locomotionControl.stop()
