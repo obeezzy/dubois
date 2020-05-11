@@ -1,0 +1,12 @@
+[Unit]
+Description=Dubois, your friendly robot!
+
+[Service]
+EnvironmentFile=/etc/dubois/dubois.conf
+Type=simple
+User=pi
+ExecStart=/bin/bash /usr/bin/dubois.sh
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

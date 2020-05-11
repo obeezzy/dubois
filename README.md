@@ -4,51 +4,82 @@ Dubois allows you to build a robot from scratch without having to follow strict 
 
 # Features
 ### Current
-- Full motion control through the Dubois Web client
+- Full motion control through the web client
 
 ### Future
 - Speed control through PWM
 - Headlight control
 - Recording, taking snapshots and streaming video through Raspberry Pi camera
 - Motion detection
-- Create Dubois Flutter client
-- "Follow me" feature
-- Temperature sensing
 - Obstacle detection
-- Distance measuring
-- Speed measuring
+- Sensor support
 - Measure battery life and notify user when battery levels drop.
 - Add AI so it can be commanded through voice.
 
-# Prerequisites
-- The Raspberry Pi used must have the Raspbian OS installed on it.
-- You must enable SSH and the camera module using ***raspi-config***.
-- The Raspberry Pi must be connected to your local (preferably home) Wi-Fi.
-
 # Getting started
-To set up, you must clone the repository, create a virtual environment and then install all dependencies listed in the **requirements.txt** file.
+## Setup Wi-Fi and SSH.
+- Download the [latest Raspbian image](https://www.raspberrypi.org/downloads/raspbian).
+- Burn the image to a microSD card of your choice (at least 2GB in size).
+- Mount the microSD card. Navigate to `/boot`.
+- Create a file called "wpa_supplicant.conf" with the following details:
+```
+country=US
+ctrl_interfac=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+network={
+    ssid="MyWifiNetwork"
+    psk="WifiPassword"
+    key_mgmt=WPA-PSK
+}
+```
+- Create a file called "ssh" in the same directory.
+
+## Set up Pi camera.
+- Open ***raspi-config***.
+```sh
+$ sudo raspi-config
+```
+- Select ***Interfacing Options > Pi Camera***
+- Enable camera.
+
+## Set up environment.
+- SSH into the Pi. The default password is "raspberry".
+```sh
+$ ssh pi@raspberrypi.local
+```
+- Download and install dependencies.
+```sh
+$ sudo apt update
+$ sudo apt install python3-pip
+$ sudo apt install python3-picamera
+$ sudo apt install rpi.gpio
+
+# Python dependencies
+$ sudo pip3 install flask
+$ sudo pip3 install flask-socketio
+```
+
+## Finally, set up Dubois.
+To set up, you must clone the repository, run `setup.sh` and reboot the Pi.
 ```sh
 $ git clone https://www.github.com/obeezzy/dubois.git
 $ cd dubois
-$ python3 -m pip install --user virtualenv
-$ python3 -m virtualenv env
-$ pip install -r requirements.txt
+$ sudo ./setup.sh
+$ sudo reboot
 ```
-Next, if your Raspberry Pi is connected to your local Wi-Fi, you need to get its IP address using the following comand:
+Once booted, reconnect to Pi and retrieve hostname.
 ```sh
+$ ssh pi@raspberrypi.local
 $ hostname -I
 ```
-To start the application, execute the following:
-```sh
-$ python3 main.py
-```
+
 If you complete these steps without error, then congratulations, you have successfully set up Dubois! To control Dubois, you need to:
-- Connect your phone to the same Wi-Fi used by Dubois.
-- Connect to Dubois' Web client by typing the following in the browser of your choice on your phone:
+- Connect your computer/phone to the same Wi-Fi used by Dubois.
+- Connect to the web client by typing the following in the address bar of the browser of your choice on your computer/phone:
 ```sh
-<ip-address>:5000
+<pi-address>:5000
 ```
-where **<ip-address>** should be replaced by the IP address of the Raspberry Pi.
+where **<pi-address>** should be replaced by the IP address of the Raspberry Pi.
 
 # Software Architecture
 Dubois is written mostly in **Python**. The **Flask** framework is used for the server. There is also a Web client written in HTML that is used as a convenient way to control Dubois without having to install the client on your phone.
@@ -80,5 +111,3 @@ You will need the [Actobotics Peewee Runt Rover Kit](https://www.microcenter.com
 
 # License
 MIT
-
-
