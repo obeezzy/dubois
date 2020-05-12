@@ -4,7 +4,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, disconnect
 from transducers.output import Wheels
 
-app = Flask(__name__)
+app = Flask(__name__, template_dir='public_html')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=None)
 
@@ -30,7 +30,7 @@ def move_forward(message):
 def move_backward(message):
     print('Move backward', message)
     if message['activated']:
-        wheels.move_in_reverse()
+        wheels.move_backward()
     else:
         wheels.stop()
 
