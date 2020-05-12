@@ -60,11 +60,11 @@ $ sudo pip3 install flask-socketio
 ```
 
 ## Finally, set up Dubois.
-To set up, you must clone the repository, run `setup.sh` and reboot the Pi.
+To set up, you must clone the repository, run `install_service.sh` and reboot the Pi.
 ```sh
 $ git clone https://www.github.com/obeezzy/dubois.git
 $ cd dubois
-$ sudo ./setup.sh
+$ sudo ./install_service.sh
 $ sudo reboot
 ```
 Once booted, reconnect to Pi and retrieve hostname.

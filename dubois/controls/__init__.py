@@ -1,2 +1,0 @@
-import controls.locomotion
-import controls.camera
