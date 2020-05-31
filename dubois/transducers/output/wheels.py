@@ -2,22 +2,21 @@ import RPi.GPIO as GPIO
 import time
 
 class Wheels(object):
-    def __init__(self, *args, **kwargs):
-        self.leftMotorPinPair = tuple(kwargs.get('leftMotorPinPair', (18, 23)))
-        self.rightMotorPinPair = tuple(kwargs.get('rightMotorPinPair', (24, 25)))
-        self.leftMotorEnablePin = kwargs.get('leftMotorEnablePin', 5)
-        self.rightMotorEnablePin = kwargs.get('rightMotorEnablePin', 6)
+    def __init__(self, *,
+                        leftMotorPinPair=(18, 23),
+                        rightMotorPinPair=(24, 25),
+                        leftMotorEnablePin=5,
+                        rightMotorEnablePin=6):
+        self.leftMotorPinPair = leftMotorPinPair
+        self.rightMotorPinPair = rightMotorPinPair
+        self.leftMotorEnablePin = leftMotorEnablePin
+        self.rightMotorEnablePin = rightMotorEnablePin
 
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.leftMotorPinPair[0], GPIO.OUT)
-        GPIO.setup(self.leftMotorPinPair[1], GPIO.OUT)
-        GPIO.setup(self.rightMotorPinPair[0], GPIO.OUT)
-        GPIO.setup(self.rightMotorPinPair[1], GPIO.OUT)
-
-        GPIO.setup(self.leftMotorEnablePin, GPIO.OUT)
-        GPIO.setup(self.rightMotorEnablePin, GPIO.OUT)
-
-        self.stop()
+        GPIO.setup(self.leftMotorPinPair, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.rightMotorPinPair, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.leftMotorEnablePin, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.rightMotorEnablePin, GPIO.OUT, initial=GPIO.LOW)
 
     def move_forward(self, *, timeout=2000):
         """Drives wheels to move in forward motion."""
@@ -69,10 +68,8 @@ class Wheels(object):
 
     def stop(self):
         """Ceases all motion."""
-        GPIO.output(self.leftMotorPinPair[0], GPIO.LOW)
-        GPIO.output(self.leftMotorPinPair[1], GPIO.LOW)
-        GPIO.output(self.rightMotorPinPair[0], GPIO.LOW)
-        GPIO.output(self.rightMotorPinPair[1], GPIO.LOW)
+        GPIO.output(self.leftMotorPinPair, GPIO.LOW)
+        GPIO.output(self.rightMotorPinPair, GPIO.LOW)
         GPIO.output(self.leftMotorEnablePin, GPIO.LOW)
         GPIO.output(self.rightMotorEnablePin, GPIO.LOW)
 
