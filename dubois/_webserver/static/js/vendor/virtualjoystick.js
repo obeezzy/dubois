@@ -1,4 +1,4 @@
-var VirtualJoystick = function(opts)
+export const VirtualJoystick = function(opts)
 {
     opts            = opts          || {};
     this._container     = opts.container    || document.body;
