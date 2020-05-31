@@ -42,7 +42,7 @@ class JoystickArea extends HTMLElement {
             } else if (joystick.right()) {
                 this.duboisClient.send(new WheelEvent('move_clockwise'));
             }
-        }, 300);
+        }, 100);
     }
 }
 
