@@ -19,8 +19,8 @@ class OscillatorRule:
             })
 
 class OscillatorClient:
-    def __init__(self, *, serverAddress=ADDRESS, serverPort=PORT):
-        self.uri = f'ws://{serverAddress}:{serverPort}'
+    def __init__(self, *, server_address=ADDRESS, server_port=PORT):
+        self.uri = f'ws://{server_address}:{server_port}'
 
     def register(self, rule):
         rule.action = 'add'
@@ -61,9 +61,9 @@ class Oscillator(ABC):
         self._client.unregister(self.rule)
 
 class Flash(Oscillator):
-    def __init__(self, *, onTime=500, offTime=500):
+    def __init__(self, *, on_time=500, off_time=500):
         super().__init__()
-        self.onTime = onTime
-        self.offTime = offTime
+        self.on_time = on_time
+        self.off_time = off_time
     def recipe(self):
-        return f'T {self.onTime} T {self.offTime}'
+        return f'T {self.on_time} T {self.off_time}'
