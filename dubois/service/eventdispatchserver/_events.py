@@ -1,10 +1,12 @@
+from abc import ABC, abstractmethod
 import _logging as logging
-from transducers.output import Wheels
+from dubois.dubois_impl.transducers.output import Wheels
 
 logger = logging.getLogger(__name__)
 _wheels = Wheels()
 
-class Event(object):
+class Event(ABC):
+    @abstractmethod
     def dispatch(self):
         pass
 

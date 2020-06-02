@@ -95,6 +95,10 @@ class OscillatorServerThread(Thread):
             for osc in oscillatorsToRemove:
                 osc.stop()
                 _pinOscillators.remove(osc)
+        elif rule.action == 'remove_all':
+            for osc in _pinOscillators:
+                osc.stop()
+            _pinOscillators.clear()
         else:
             logger.warning('Unhandled oscillator rule.')
 

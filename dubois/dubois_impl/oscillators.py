@@ -1,17 +1,15 @@
 import websockets, asyncio, json
 from threading import Thread
 from abc import ABC, abstractmethod
-from . import _logging as logging
 
-logger = logging.getLogger(__name__)
 ADDRESS = '127.0.0.1'
 PORT = 4202
 
 class OscillatorRule:
-    def __init__(self, *, pins, recipe):
-        self.action = ''
+    def __init__(self, *, pins, recipe, action=''):
         self.pins = pins
         self.recipe = recipe
+        self.action = action
 
     def __str__(self):
         return json.dumps({
@@ -30,6 +28,10 @@ class OscillatorClient:
 
     def unregister(self, rule):
         rule.action = 'remove'
+        asyncio.get_event_loop().run_until_complete(self._post(rule))
+
+    def unregister_all(self):
+        rule = OscillatorRule(pins=[], recipe='', action='remove_all')
         asyncio.get_event_loop().run_until_complete(self._post(rule))
 
     async def _post(self, rule):
@@ -58,7 +60,7 @@ class Oscillator(ABC):
 
         self._client.unregister(self.rule)
 
-class Blink(Oscillator):
+class Flash(Oscillator):
     def __init__(self, *, onTime=500, offTime=500):
         super().__init__()
         self.onTime = onTime
