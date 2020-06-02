@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 ADDRESS = '127.0.0.1'
 PORT = 4202
 
-_pinOscillators = []
+_pin_oscillators = []
 
 class OscillatorRule:
     def __init__(self, rawData):
@@ -78,7 +78,7 @@ class OscillatorServerThread(Thread):
 
         if rule.action == 'add':
             oscillatorsToUpdate = filter(lambda osc: True if osc.pin in rule.pins else False,
-                                            _pinOscillators)
+                                            _pin_oscillators)
             pinsToAdd = list(rule.pins)
 
             for osc in oscillatorsToUpdate:
@@ -88,17 +88,17 @@ class OscillatorServerThread(Thread):
             for pin in pinsToAdd:
                 osc = PinOscillator(pin=pin, rule=rule)
                 osc.oscillate()
-                _pinOscillators.append(osc)
+                _pin_oscillators.append(osc)
         elif rule.action == 'remove':
             oscillatorsToRemove = filter(lambda osc: True if osc.pin in rule.pins else False,
-                                            _pinOscillators)
+                                            _pin_oscillators)
             for osc in oscillatorsToRemove:
                 osc.stop()
-                _pinOscillators.remove(osc)
+                _pin_oscillators.remove(osc)
         elif rule.action == 'remove_all':
-            for osc in _pinOscillators:
+            for osc in _pin_oscillators:
                 osc.stop()
-            _pinOscillators.clear()
+            _pin_oscillators.clear()
         else:
             logger.warning('Unhandled oscillator rule.')
 
