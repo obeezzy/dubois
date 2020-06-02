@@ -8,9 +8,8 @@ class Indicator:
         self._setup()
 
     def _setup(self):
-        if GPIO.getmode() != GPIO.BCM:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(self.pins, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.pins, GPIO.OUT, initial=GPIO.LOW)
 
     def _stop_oscillators(self):
         if self.oscillators is not None:

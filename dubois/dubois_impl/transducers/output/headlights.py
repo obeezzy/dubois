@@ -8,9 +8,8 @@ class Headlights:
         self._setup()
 
     def _setup(self):
-        if GPIO.getmode() != GPIO.BCM:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(self.pin, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.pin, GPIO.OUT, initial=GPIO.LOW)
 
     def power_on(self, oscillator=None):
         if oscillator is not None and not isinstance(oscillator, Oscillator):
