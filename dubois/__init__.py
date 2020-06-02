@@ -1,5 +1,5 @@
-from .dubois_impl.transducers.output import Wheels, Headlights
-from .dubois_impl.oscillators import Flash
+from .dubois_impl.transducers.output import Headlights, Indicator, Wheels
+from .dubois_impl.oscillators import Flash, AlwaysOn, AlwaysOff
 import atexit
 
 @atexit.register

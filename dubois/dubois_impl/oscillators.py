@@ -55,10 +55,8 @@ class Oscillator(ABC):
         self._client.register(self.rule)
 
     def stop(self):
-        if self.rule is None:
-            raise ValueError('Rule not set.')
-
-        self._client.unregister(self.rule)
+        if hasattr(self, 'rule') and self.rule is not None:
+            self._client.unregister(self.rule)
 
 class Flash(Oscillator):
     def __init__(self, *, on_time=500, off_time=500):
@@ -67,3 +65,17 @@ class Flash(Oscillator):
         self.off_time = off_time
     def recipe(self):
         return f'T {self.on_time} T {self.off_time}'
+
+class AlwaysOn(Oscillator):
+    def __init__(self):
+        super().__init__()
+    def recipe(self):
+        return 'T'
+
+class AlwaysOff(Oscillator):
+    def __init__(self, *, on_time=500, off_time=500):
+        super().__init__()
+        self.on_time = on_time
+        self.off_time = off_time
+    def recipe(self):
+        return ''
