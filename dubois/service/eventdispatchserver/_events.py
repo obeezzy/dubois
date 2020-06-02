@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import _logging as logging
-from dubois.dubois_impl.transducers.output import Wheels
+from dubois import Wheels
 
 logger = logging.getLogger(__name__)
 _wheels = Wheels()
