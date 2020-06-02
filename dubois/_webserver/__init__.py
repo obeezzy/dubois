@@ -15,8 +15,8 @@ def index():
     return render_template('index.html')
 
 def start():
-    flaskThread = Thread(target=app.run,
-                            args=('0.0.0.0', PORT),
-                            kwargs=dict(debug=True, use_reloader=False))
-    flaskThread.start()
+    Thread(target=app.run,
+            args=('0.0.0.0', PORT),
+            kwargs=dict(debug=True, use_reloader=False)) \
+            .start()
     logger.info("Web server started.")
