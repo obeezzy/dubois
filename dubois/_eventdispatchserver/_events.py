@@ -1,4 +1,3 @@
-import json
 import _logging as logging
 from transducers.output import Wheels
 
@@ -8,23 +7,6 @@ _wheels = Wheels()
 class Event(object):
     def dispatch(self):
         pass
-
-class RawEvent(Event):
-    def __init__(self, rawData):
-        event = json.loads(rawData)
-        self.action = event["action"]
-        self.type = event["type"]
-        self.params = event["params"]
-
-    def dispatch(self):
-        pass
-
-    def __str__(self):
-        return {
-            'action': self.action,
-            'type': self.type,
-            'params': self.params
-        }
 
 class WheelEvent(Event):
     def __init__(self, rawEvent):
@@ -43,5 +25,5 @@ class WheelEvent(Event):
         _wheels.stop()
 
     def __str__(self):
-        return 'WheelEvent(action=%s, timeout=%i)' \
-                % (self.action, self.timeout)
+        return (f'WheelEvent(action={self.action}, '
+                f'timeout={self.timeout})')
