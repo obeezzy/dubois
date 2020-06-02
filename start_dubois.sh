@@ -8,4 +8,5 @@ fi
 DATE=`date '+%Y-%m-%d %H:%M:%S'`
 echo "Dubois service started at ${DATE}." | systemd-cat -p info
 
-$DUBOIS_DIR/dubois/duboisd.py
+export PYTHONPATH=$DUBOIS_DIR
+$DUBOIS_DIR/dubois/service/duboisd.py
