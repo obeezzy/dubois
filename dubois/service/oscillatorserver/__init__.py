@@ -15,11 +15,13 @@ class OscillatorRule:
         self.action = rule['action']
         self.pins = rule['pins']
         self.recipe = rule['recipe']
+        self.timestamp = rule['timestamp']
 
     def __str__(self):
         return (f'OscillatorRule(action={self.action}, '
                 f'pins={", ".join(str(p) for p in self.pins)}, '
-                f'recipe={self.recipe})')
+                f'recipe={self.recipe}, ' 
+                f'timestamp={self.timestamp})')
 
 class PinOscillator(Thread):
     def __init__(self, *, pin, rule):
@@ -45,6 +47,9 @@ class PinOscillator(Thread):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT, initial=GPIO.LOW)
 
+        latency = int(time.time()) - self.rule.timestamp \
+                    if self.rule.timestamp > 0 \
+                    else 0
         recipeSymbols = self.rule.recipe.split(' ')
         pinActive = False
         while not self._stopRequested:
@@ -55,7 +60,14 @@ class PinOscillator(Thread):
                     pinActive = not pinActive
                     GPIO.output(self.pin, pinActive)
                 elif symbol.isdigit():
-                    time.sleep(int(symbol) / 1000)
+                    delayInMs = int(symbol)
+                    if latency >= delayInMs:
+                        latency -= delayInMs
+                        continue
+                    else:
+                        delayInMs -= latency
+                        latency = 0
+                        time.sleep(delayInMs / 1000)
                 else:
                     logger.warning(f'Unknown symbol: {symbol}')
 

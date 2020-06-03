@@ -6,16 +6,20 @@ ADDRESS = '127.0.0.1'
 PORT = 4202
 
 class OscillatorRule:
-    def __init__(self, *, pins, recipe, action=''):
+    def __init__(self, *, pins, recipe, action='', timestamp=None):
         self.pins = pins
         self.recipe = recipe
         self.action = action
+        self.timestamp = timestamp
 
     def __str__(self):
         return json.dumps({
                 'action': self.action,
                 'pins': self.pins,
                 'recipe': self.recipe,
+                'timestamp': self.timestamp \
+                                if self.timestamp is not None \
+                                else 0,
             })
 
 class OscillatorClient:
@@ -47,11 +51,12 @@ class Oscillator(ABC):
     def recipe(self):
         pass
 
-    def start(self, *, pins):
+    def start(self, *, pins, timestamp=None):
         if not isinstance(pins, list):
             raise ValueError('"pins" argument must be of type "list".')
         self.rule = OscillatorRule(pins=pins,
-                                    recipe=self.recipe())
+                                    recipe=self.recipe(),
+                                    timestamp=timestamp)
         self._client.register(self.rule)
 
     def stop(self):
@@ -73,9 +78,7 @@ class AlwaysOn(Oscillator):
         return 'T'
 
 class AlwaysOff(Oscillator):
-    def __init__(self, *, on_time=500, off_time=500):
+    def __init__(self):
         super().__init__()
-        self.on_time = on_time
-        self.off_time = off_time
     def recipe(self):
         return ''
