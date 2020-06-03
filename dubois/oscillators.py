@@ -31,7 +31,7 @@ class OscillatorClient:
         asyncio.get_event_loop().run_until_complete(self._post(rule))
 
     def unregister_all(self):
-        rule = OscillatorRule(pins=[], recipe='', action='remove_all')
+        rule = OscillatorRule(action='remove_all', pins=[], recipe='')
         asyncio.get_event_loop().run_until_complete(self._post(rule))
 
     async def _post(self, rule):

@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from ...oscillators import Oscillator
+from dubois.oscillators import Oscillator
 
 class Headlights:
     def __init__(self, *, pin=7):
