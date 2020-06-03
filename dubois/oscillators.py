@@ -5,23 +5,6 @@ from abc import ABC, abstractmethod
 ADDRESS = '127.0.0.1'
 PORT = 4202
 
-class OscillatorRule:
-    def __init__(self, *, pins, recipe, action='', timestamp=None):
-        self.pins = pins
-        self.recipe = recipe
-        self.action = action
-        self.timestamp = timestamp
-
-    def __str__(self):
-        return json.dumps({
-                'action': self.action,
-                'pins': self.pins,
-                'recipe': self.recipe,
-                'timestamp': self.timestamp \
-                                if self.timestamp is not None \
-                                else 0,
-            })
-
 class OscillatorClient:
     def __init__(self, *, server_address=ADDRESS, server_port=PORT):
         self.uri = f'ws://{server_address}:{server_port}'
@@ -43,8 +26,10 @@ class OscillatorClient:
             await websocket.send(str(rule))
 
 class Oscillator(ABC):
-    def __init__(self):
+    INFINITE = -1
+    def __init__(self, *, loops=INFINITE):
         self._client = OscillatorClient()
+        self.loops = loops
 
     @property
     @abstractmethod
@@ -56,6 +41,7 @@ class Oscillator(ABC):
             raise ValueError('"pins" argument must be of type "list".')
         self.rule = OscillatorRule(pins=pins,
                                     recipe=self.recipe(),
+                                    loops=self.loops,
                                     timestamp=timestamp)
         self._client.register(self.rule)
 
@@ -63,9 +49,33 @@ class Oscillator(ABC):
         if hasattr(self, 'rule') and self.rule is not None:
             self._client.unregister(self.rule)
 
+class OscillatorRule:
+    def __init__(self, *,
+                    pins,
+                    recipe,
+                    action='',
+                    loops=Oscillator.INFINITE,
+                    timestamp=None):
+        self.action = action
+        self.loops = loops
+        self.pins = pins
+        self.recipe = recipe
+        self.timestamp = timestamp
+
+    def __str__(self):
+        return json.dumps({
+                'action': self.action,
+                'loops': self.loops,
+                'pins': self.pins,
+                'recipe': self.recipe,
+                'timestamp': self.timestamp \
+                                if self.timestamp is not None \
+                                else 0,
+            })
+
 class Flash(Oscillator):
-    def __init__(self, *, on_time=500, off_time=500):
-        super().__init__()
+    def __init__(self, *, on_time=500, off_time=500, loops=Oscillator.INFINITE):
+        super().__init__(loops=loops)
         self.on_time = on_time
         self.off_time = off_time
     def recipe(self):
@@ -73,8 +83,8 @@ class Flash(Oscillator):
                 f'T {self.off_time}')
 
 class DoubleFlash(Oscillator):
-    def __init__(self, *, burst_time=50, off_time=500):
-        super().__init__()
+    def __init__(self, *, burst_time=50, off_time=500, loops=Oscillator.INFINITE):
+        super().__init__(loops=loops)
         self.burst_time = burst_time
         self.off_time = off_time
     def recipe(self):
@@ -84,8 +94,8 @@ class DoubleFlash(Oscillator):
                 f'T {self.off_time}')
 
 class TripleFlash(Oscillator):
-    def __init__(self, *, burst_time=50, off_time=500):
-        super().__init__()
+    def __init__(self, *, burst_time=50, off_time=500, loops=Oscillator.INFINITE):
+        super().__init__(loops=loops)
         self.burst_time = burst_time
         self.off_time = off_time
     def recipe(self):
@@ -109,8 +119,8 @@ class AlwaysOff(Oscillator):
         return ''
 
 class Inline(Oscillator):
-    def __init__(self, recipe):
-        super().__init__()
+    def __init__(self, recipe, *, loops=Oscillator.INFINITE):
+        super().__init__(loops=loops)
         self._recipe = recipe
     def recipe(self):
         return self._recipe
