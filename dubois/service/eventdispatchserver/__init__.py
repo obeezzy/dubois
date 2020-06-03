@@ -10,14 +10,14 @@ PORT = 4201
 class RawEvent:
     def __init__(self, rawData):
         event = json.loads(rawData)
-        self.action = event["action"]
-        self.type = event["type"]
-        self.params = event["params"]
+        self.action = event['action']
+        self.category = event['category']
+        self.params = event['params']
 
     def __str__(self):
         return {
             'action': self.action,
-            'type': self.type,
+            'category': self.category,
             'params': self.params
         }
 
@@ -35,9 +35,9 @@ class EventDispatchServerThread(Thread):
             logger.debug('Received from (%s): %s' \
                         % (str(websocket.remote_address), event.action))
 
-            if event.type == 'pingEvent':
+            if event.category == 'ping':
                 logger.debug('Ping received!')
-            elif event.type == 'wheelEvent':
+            elif event.category == 'wheel':
                 WheelEvent(event).dispatch()
 
 def start():
