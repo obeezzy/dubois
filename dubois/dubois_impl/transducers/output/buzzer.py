@@ -1,8 +1,9 @@
 import RPi.GPIO as GPIO
+from os import environ as env
 from dubois.oscillators import Oscillator
 
 class Buzzer:
-    def __init__(self, *, pin=26):
+    def __init__(self, *, pin=env.get('BUZZER_PIN', 26)):
         self.pin = pin
         self.oscillator = None
         self._setup()

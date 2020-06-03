@@ -1,8 +1,9 @@
 import RPi.GPIO as GPIO
 from dubois.oscillators import Oscillator
+from os import environ as env
 
 class Headlights:
-    def __init__(self, *, pin=7):
+    def __init__(self, *, pin=env.get('HEADLIGHTS_PIN', 7)):
         self.pin = pin
         self.oscillator = None
         self._setup()
