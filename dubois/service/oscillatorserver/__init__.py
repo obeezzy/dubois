@@ -13,12 +13,14 @@ class OscillatorRule:
     def __init__(self, rawData):
         rule = json.loads(rawData)
         self.action = rule['action']
+        self.loops = rule['loops']
         self.pins = rule['pins']
         self.recipe = rule['recipe']
         self.timestamp = rule['timestamp']
 
     def __str__(self):
         return (f'OscillatorRule(action={self.action}, '
+                f'loops={self.loops}, '
                 f'pins={", ".join(str(p) for p in self.pins)}, '
                 f'recipe={self.recipe}, ' 
                 f'timestamp={self.timestamp})')
@@ -52,7 +54,12 @@ class PinOscillator(Thread):
                     else 0
         recipeSymbols = self.rule.recipe.split(' ')
         pinActive = False
+        loops = self.rule.loops
         while not self._stopRequested:
+            if loops > 0:
+                loops -= 1
+            elif loops == 0:
+                break
             for symbol in recipeSymbols:
                 if self._stopRequested:
                     break
