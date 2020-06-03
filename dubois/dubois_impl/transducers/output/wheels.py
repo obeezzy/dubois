@@ -1,40 +1,47 @@
 import RPi.GPIO as GPIO
 import time
+from enum import IntEnum, unique
+from os import environ as env
+
+@unique
+class Direction(IntEnum):
+    REVERSE = 0
+    FORWARD = 1
 
 class Wheels:
     def __init__(self, *,
-                        leftMotorPinPair=(18, 23),
-                        rightMotorPinPair=(24, 25),
-                        leftMotorEnablePin=5,
-                        rightMotorEnablePin=6):
-        self.leftMotorPinPair = leftMotorPinPair
-        self.rightMotorPinPair = rightMotorPinPair
-        self.leftMotorEnablePin = leftMotorEnablePin
-        self.rightMotorEnablePin = rightMotorEnablePin
+                        left_wheel_pins=eval(env.get('LEFT_WHEEL_PINS', str((18, 23)))),
+                        right_wheel_pins=eval(env.get('RIGHT_WHEEL_PINS', str((24, 25)))),
+                        left_wheel_enable_pin=env.get('LEFT_WHEEL_ENABLE_PIN', 5),
+                        right_wheel_enable_pin=env.get('RIGHT_WHEEL_ENABLE_PIN', 6)):
+        self.left_wheel_pins = left_wheel_pins
+        self.right_wheel_pins = right_wheel_pins
+        self.left_wheel_enable_pin = left_wheel_enable_pin
+        self.right_wheel_enable_pin = right_wheel_enable_pin
         self._setup()
 
     def _setup(self):
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.leftMotorPinPair, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.rightMotorPinPair, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.leftMotorEnablePin, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(self.rightMotorEnablePin, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.left_wheel_pins, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.right_wheel_pins, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.left_wheel_enable_pin, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(self.right_wheel_enable_pin, GPIO.OUT, initial=GPIO.LOW)
 
     def _enable_pins(self):
-        GPIO.output(self.leftMotorEnablePin, GPIO.HIGH)
-        GPIO.output(self.rightMotorEnablePin, GPIO.HIGH)
+        GPIO.output(self.left_wheel_enable_pin, GPIO.HIGH)
+        GPIO.output(self.right_wheel_enable_pin, GPIO.HIGH)
 
     def _disable_pins(self):
-        GPIO.output(self.leftMotorEnablePin, GPIO.LOW)
-        GPIO.output(self.rightMotorEnablePin, GPIO.LOW)
+        GPIO.output(self.left_wheel_enable_pin, GPIO.LOW)
+        GPIO.output(self.right_wheel_enable_pin, GPIO.LOW)
 
     def move_forward(self, *, timeout=2000):
         """Drives wheels to move in forward motion."""
         if not isinstance(timeout, int):
             raise InvalidTimeoutError()
         self._setup()
-        GPIO.output(self.leftMotorPinPair[1], GPIO.HIGH)
-        GPIO.output(self.rightMotorPinPair[1], GPIO.HIGH)
+        GPIO.output(self.left_wheel_pins[Direction.FORWARD], GPIO.HIGH)
+        GPIO.output(self.right_wheel_pins[Direction.FORWARD], GPIO.HIGH)
         self._enable_pins()
         if timeout > 0:
             time.sleep(timeout / 1000)
@@ -45,8 +52,8 @@ class Wheels:
         if not isinstance(timeout, int):
             raise InvalidTimeoutError()
         self._setup()
-        GPIO.output(self.leftMotorPinPair[0], GPIO.HIGH)
-        GPIO.output(self.rightMotorPinPair[0], GPIO.HIGH)
+        GPIO.output(self.left_wheel_pins[Direction.REVERSE], GPIO.HIGH)
+        GPIO.output(self.right_wheel_pins[Direction.REVERSE], GPIO.HIGH)
         self._enable_pins()
         if timeout > 0:
             time.sleep(timeout / 1000)
@@ -57,20 +64,20 @@ class Wheels:
         if not isinstance(timeout, int):
             raise InvalidTimeoutError()
         self._setup()
-        GPIO.output(self.leftMotorPinPair[0], GPIO.HIGH)
-        GPIO.output(self.rightMotorPinPair[1], GPIO.HIGH)
+        GPIO.output(self.left_wheel_pins[Direction.REVERSE], GPIO.HIGH)
+        GPIO.output(self.right_wheel_pins[Direction.FORWARD], GPIO.HIGH)
         self._enable_pins()
         if timeout > 0:
             time.sleep(timeout / 1000)
             self.stop()
 
-    def move_clockwise(self, *, timeout=None):
+    def move_clockwise(self, *, timeout=2000):
         """Drives wheels to move in clockwise motion."""
         if not isinstance(timeout, int):
             raise InvalidTimeoutError()
         self._setup()
-        GPIO.output(self.leftMotorPinPair[1], GPIO.HIGH)
-        GPIO.output(self.rightMotorPinPair[0], GPIO.HIGH)
+        GPIO.output(self.left_wheel_pins[Direction.FORWARD], GPIO.HIGH)
+        GPIO.output(self.right_wheel_pins[Direction.REVERSE], GPIO.HIGH)
         self._enable_pins()
         if timeout > 0:
             time.sleep(timeout / 1000)
@@ -79,10 +86,10 @@ class Wheels:
     def stop(self):
         """Ceases all motion."""
         self._setup()
-        GPIO.output(self.leftMotorPinPair, GPIO.LOW)
-        GPIO.output(self.rightMotorPinPair, GPIO.LOW)
+        GPIO.output(self.left_wheel_pins, GPIO.LOW)
+        GPIO.output(self.right_wheel_pins, GPIO.LOW)
         self._disable_pins()
 
 class InvalidTimeoutError(Exception):
     def __str__(self):
-        return "'timeout' must be of type 'int'.";
+        return '"timeout" must be of type "int".'

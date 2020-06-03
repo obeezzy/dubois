@@ -1,10 +1,17 @@
-import time
 import RPi.GPIO as GPIO
+import time
+from enum import IntEnum, unique
+from os import environ as env
 from dubois.oscillators import Oscillator
 
+@unique
+class Color(IntEnum):
+    RED = 0
+    GREEN = 1
+    BLUE = 2
+
 class Indicator:
-    COLOR_COUNT = 3
-    def __init__(self, pins=(14, 16, 15)):
+    def __init__(self, pins=eval(env.get('INDICATOR_PINS', str((14, 16, 15))))):
         self.pins = pins
         self.oscillators = None
         self._setup()
@@ -30,8 +37,8 @@ class Indicator:
 
     def power_on(self, *oscillators):
         try:
-            if oscillators is not None and len(oscillators) > Indicator.COLOR_COUNT:
-                raise ArgumentLimitExceededError(len(oscillators), Indicator.COLOR_COUNT)
+            if oscillators is not None and len(oscillators) > len(Color):
+                raise ArgumentLimitExceededError(len(oscillators), len(Color))
 
             self._stop_oscillators()
             self.oscillators = tuple(oscillators)
@@ -40,39 +47,39 @@ class Indicator:
             self._setup()
             if oscillators is None \
                     or len(oscillators) is 0 \
-                    or (len(oscillators) > 0 and oscillators[0] is None):
-                GPIO.output(self.pins[0], GPIO.LOW)
-            elif len(oscillators) > 0 and oscillators[0] is not None:
+                    or (len(oscillators) > 0 and oscillators[Color.RED] is None):
+                GPIO.output(self.pins[Color.RED], GPIO.LOW)
+            elif len(oscillators) > 0 and oscillators[Color.RED] is not None:
                 if oscillators is not None \
-                        and not isinstance(oscillators[0], Oscillator):
+                        and not isinstance(oscillators[Color.RED], Oscillator):
                     raise TypeError('Expected object of type "Oscillator".')
                 else:
-                    self._start_oscillator(oscillators[0],
-                                            pin=self.pins[0],
+                    self._start_oscillator(oscillators[Color.RED],
+                                            pin=self.pins[Color.RED],
                                             timestamp=timestamp)
             if oscillators is None \
                     or len(oscillators) is 0 \
-                    or (len(oscillators) > 1 and oscillators[1] is None):
-                GPIO.output(self.pins[1], GPIO.LOW)
-            elif len(oscillators) > 1 and oscillators[1] is not None:
+                    or (len(oscillators) > 1 and oscillatorsColor.GREEN is None):
+                GPIO.output(self.pinsColor.GREEN, GPIO.LOW)
+            elif len(oscillators) > 1 and oscillators[Color.GREEN] is not None:
                 if oscillators is not None \
-                        and not isinstance(oscillators[1], Oscillator):
+                        and not isinstance(oscillators[Color.GREEN], Oscillator):
                     raise TypeError('Expected object of type "Oscillator".')
                 else:
-                    self._start_oscillator(oscillators[1],
-                                            pin=self.pins[1],
+                    self._start_oscillator(oscillators[Color.GREEN],
+                                            pin=self.pins[Color.GREEN],
                                             timestamp=timestamp)
             if oscillators is None \
                     or len(oscillators) is 0 \
-                    or (len(oscillators) > 2 and oscillators[2] is None):
-                GPIO.output(self.pins[2], GPIO.LOW)
-            elif len(oscillators) > 2 and oscillators[2] is not None:
+                    or (len(oscillators) > 2 and oscillators[Color.BLUE] is None):
+                GPIO.output(self.pinsColor.BLUE, GPIO.LOW)
+            elif len(oscillators) > 2 and oscillators[Color.BLUE] is not None:
                 if oscillators is not None \
-                        and not isinstance(oscillators[2], Oscillator):
+                        and not isinstance(oscillators[Color.BLUE], Oscillator):
                     raise TypeError('Expected object of type "Oscillator".')
                 else:
-                    self._start_oscillator(oscillators[2],
-                                            pin=self.pins[2],
+                    self._start_oscillator(oscillators[Color.BLUE],
+                                            pin=self.pins[Color.BLUE],
                                             timestamp=timestamp)
         except:
             self._stop_oscillators()
