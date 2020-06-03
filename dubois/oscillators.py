@@ -69,7 +69,32 @@ class Flash(Oscillator):
         self.on_time = on_time
         self.off_time = off_time
     def recipe(self):
-        return f'T {self.on_time} T {self.off_time}'
+        return (f'T {self.on_time} '
+                f'T {self.off_time}')
+
+class DoubleFlash(Oscillator):
+    def __init__(self, *, burst_time=50, off_time=500):
+        super().__init__()
+        self.burst_time = burst_time
+        self.off_time = off_time
+    def recipe(self):
+        return (f'T {self.burst_time} '
+                f'T {self.burst_time} '
+                f'T {self.burst_time} '
+                f'T {self.off_time}')
+
+class TripleFlash(Oscillator):
+    def __init__(self, *, burst_time=50, off_time=500):
+        super().__init__()
+        self.burst_time = burst_time
+        self.off_time = off_time
+    def recipe(self):
+        return (f'T {self.burst_time} '
+                f'T {self.burst_time} '
+                f'T {self.burst_time} '
+                f'T {self.burst_time} '
+                f'T {self.burst_time} '
+                f'T {self.off_time}')
 
 class AlwaysOn(Oscillator):
     def __init__(self):
@@ -82,3 +107,10 @@ class AlwaysOff(Oscillator):
         super().__init__()
     def recipe(self):
         return ''
+
+class Inline(Oscillator):
+    def __init__(self, recipe):
+        super().__init__()
+        self._recipe = recipe
+    def recipe(self):
+        return self._recipe
