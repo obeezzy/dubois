@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 from dubois.oscillators import Oscillator
 
-class Headlights:
-    def __init__(self, *, pin=7):
+class Buzzer:
+    def __init__(self, *, pin=26):
         self.pin = pin
         self.oscillator = None
         self._setup()
@@ -31,3 +31,4 @@ class Headlights:
         else:
             self.oscillator.stop()
             self.oscillator = None
+

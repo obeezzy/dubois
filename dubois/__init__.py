@@ -1,4 +1,4 @@
-from .dubois_impl.transducers.output import Headlights, Indicator, Wheels
+from .dubois_impl.transducers.output import Headlights, Indicator, Wheels, Buzzer
 import atexit
 
 @atexit.register
