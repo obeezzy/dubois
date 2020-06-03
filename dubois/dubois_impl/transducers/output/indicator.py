@@ -25,7 +25,8 @@ class Indicator:
     def _stop_oscillators(self):
         if self.oscillators is not None:
             for osc in self.oscillators:
-                osc.stop()
+                if osc is not None:
+                    osc.stop()
 
     def power_on(self, *oscillators):
         try:
@@ -40,7 +41,7 @@ class Indicator:
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 0 and oscillators[0] is None):
-                GPIO.output(self.pins[0], GPIO.HIGH)
+                GPIO.output(self.pins[0], GPIO.LOW)
             elif len(oscillators) > 0 and oscillators[0] is not None:
                 if oscillators is not None \
                         and not isinstance(oscillators[0], Oscillator):
@@ -52,7 +53,7 @@ class Indicator:
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 1 and oscillators[1] is None):
-                GPIO.output(self.pins[1], GPIO.HIGH)
+                GPIO.output(self.pins[1], GPIO.LOW)
             elif len(oscillators) > 1 and oscillators[1] is not None:
                 if oscillators is not None \
                         and not isinstance(oscillators[1], Oscillator):
@@ -64,7 +65,7 @@ class Indicator:
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 2 and oscillators[2] is None):
-                GPIO.output(self.pins[2], GPIO.HIGH)
+                GPIO.output(self.pins[2], GPIO.LOW)
             elif len(oscillators) > 2 and oscillators[2] is not None:
                 if oscillators is not None \
                         and not isinstance(oscillators[2], Oscillator):
