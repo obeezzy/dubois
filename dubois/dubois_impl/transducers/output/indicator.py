@@ -1,3 +1,4 @@
+import time
 import RPi.GPIO as GPIO
 from dubois.oscillators import Oscillator
 
@@ -12,13 +13,14 @@ class Indicator:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pins, GPIO.OUT, initial=GPIO.LOW)
 
-    def _start_oscillator(self, oscillator, *, pin):
+    def _start_oscillator(self, oscillator, *, pin, timestamp=None):
         if oscillator.recipe().upper() == 'T':
             GPIO.output(pin, GPIO.HIGH)
         elif oscillator.recipe() == '':
             GPIO.output(pin, GPIO.LOW)
         else:
-            oscillator.start(pins=[pin])
+            oscillator.start(pins=[pin],
+                                timestamp=timestamp)
 
     def _stop_oscillators(self):
         if self.oscillators is not None:
@@ -32,6 +34,7 @@ class Indicator:
 
             self._stop_oscillators()
             self.oscillators = tuple(oscillators)
+            timestamp = int(time.time())
 
             self._setup()
             if oscillators is None \
@@ -43,7 +46,9 @@ class Indicator:
                         and not isinstance(oscillators[0], Oscillator):
                     raise TypeError('Expected object of type "Oscillator".')
                 else:
-                    self._start_oscillator(oscillators[0], pin=self.pins[0])
+                    self._start_oscillator(oscillators[0],
+                                            pin=self.pins[0],
+                                            timestamp=timestamp)
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 1 and oscillators[1] is None):
@@ -53,7 +58,9 @@ class Indicator:
                         and not isinstance(oscillators[1], Oscillator):
                     raise TypeError('Expected object of type "Oscillator".')
                 else:
-                    self._start_oscillator(oscillators[1], pin=self.pins[1])
+                    self._start_oscillator(oscillators[1],
+                                            pin=self.pins[1],
+                                            timestamp=timestamp)
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 2 and oscillators[2] is None):
@@ -63,7 +70,9 @@ class Indicator:
                         and not isinstance(oscillators[2], Oscillator):
                     raise TypeError('Expected object of type "Oscillator".')
                 else:
-                    self._start_oscillator(oscillators[2], pin=self.pins[2])
+                    self._start_oscillator(oscillators[2],
+                                            pin=self.pins[2],
+                                            timestamp=timestamp)
         except:
             self._stop_oscillators()
             raise
