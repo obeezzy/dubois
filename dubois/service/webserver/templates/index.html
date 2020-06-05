@@ -7,17 +7,17 @@
         <link rel='shortcut icon' href='/static/favicon.ico'>
         <script type='module' src='/static/js/app.js'></script>
         <script src='/static/js/vendor/live.js'></script>
-        <title>Dubois</title>
+        <title>{{ title }}</title>
     </head>
     <body>
         <main>
             <div class='dashboard'>
                 <joystick-area class='dashboard__area'> 
                     <h1 class='dashboard__header dashboard__header--greeting'>
-                        Hi, I'm Dubois 🤖
+                        {{ greeting }}
                     </h1>
                     <h4 class='dashboard__header dashboard__header--instructions'>
-                        Drag your thumb across the screen to move me around.
+                        {{ instructions }}
                     </h4>
                 </joystick-area>
             </div>

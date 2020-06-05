@@ -12,7 +12,10 @@ PORT = 4200
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',
+                            title='Dubois',
+                            greeting="Hi, I'm Dubois 🤖",
+                            instructions='Drag your thumb across the screen to move me around.')
 
 def start():
     Thread(target=app.run,
