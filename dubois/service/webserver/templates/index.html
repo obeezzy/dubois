@@ -1,18 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="/static/css/style.css" rel="stylesheet">
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <link rel='stylesheet' href='/static/css/style.css'>
         <link rel='shortcut icon' href='/static/favicon.ico'>
-        <script type='module' src="/static/js/app.js"></script>
-        <!--        <script src="/static/js/vendor/live.js"></script> -->
+        <script type='module' src='/static/js/app.js'></script>
+        <script src='/static/js/vendor/live.js'></script>
         <title>Dubois</title>
     </head>
     <body>
-        <joystick-area>
-            <h1>Hi, I'm Dubois 🤖</h1>
-            <h4>Created by his excellency, Efe ;)</h4>
-        </joystick-area>
+        <main>
+            <div class='dashboard'>
+                <joystick-area class='dashboard__area'> 
+                    <h1 class='dashboard__header dashboard__header--greeting'>
+                        Hi, I'm Dubois 🤖
+                    </h1>
+                    <h4 class='dashboard__header dashboard__header--instructions'>
+                        Drag your thumb across the screen to move me around.
+                    </h4>
+                </joystick-area>
+            </div>
+            <div class='panel'>
+                <ul class='panel__container'>
+                    <li class='panel__item'>
+                        <i class='panel__item__icon fi-lightbulb'></i>
+                        <h6 class='panel__item__title'>Headlights</h6>
+                    </li>
+                    <li class='panel__item'>
+                        <i class='panel__item__icon fi-megaphone'></i>
+                        <h6 class='panel__item__title'>Buzzer</h6>
+                    </li>
+                    <li class='panel__item'>
+                        <i class='panel__item__icon fi-camera'></i>
+                        <h6 class='panel__item__title'>Camera</h6>
+                    </li>
+                    <li class='panel__item'>
+                        <i class='panel__item__icon fa fa-bell'></i>
+                        <h6 class='panel__item__title panel__item__title--fa'>Indicator</h6>
+                    </li>
+                </ul>
+            </div>
+        </main>
     </body>
 </html>
