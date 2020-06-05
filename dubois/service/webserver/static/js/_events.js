@@ -14,7 +14,7 @@ class Event {
     }
 }
 
-export class Ping extends Event {
+export class PingEvent extends Event {
     constructor() {
         super({ action: 'ping', category: 'ping' });
     }
