@@ -79,7 +79,7 @@ class OscillatorRule:
                 f'action={self.action}, '
                 f'loops={self.loops}, '
                 f'pins={self.pins}, '
-                f'recipe={self.recipe}, ',
+                f'recipe={self.recipe}, '
                 f'timestamp={self.timestamp}'
                 f')')
 
@@ -180,10 +180,65 @@ class Inline(Oscillator):
         return self._recipe
 
 class Sos(Oscillator):
-    def __init__(self, *, repeat_delay=1000):
+    def __init__(self, *,
+                    repeat_delay=800):
         super().__init__()
         self.repeat_delay = repeat_delay
     def recipe(self):
         return (f'T 100 T 30 T 100 T 30 T 100 T 30 T '
                 f'200 T 30 T 200 T 30 T 200 T 30 '
                 f'T 100 T 30 T 100 T 30 T 100 T {self.repeat_delay}')
+
+class MorseCode(Oscillator):
+    DICT = {
+            'A':'.-', 'B':'-...',
+            'C':'-.-.', 'D':'-..', 'E':'.',
+            'F':'..-.', 'G':'--.', 'H':'....',
+            'I':'..', 'J':'.---', 'K':'-.-',
+            'L':'.-..', 'M':'--', 'N':'-.',
+            'O':'---', 'P':'.--.', 'Q':'--.-',
+            'R':'.-.', 'S':'...', 'T':'-',
+            'U':'..-', 'V':'...-', 'W':'.--',
+            'X':'-..-', 'Y':'-.--', 'Z':'--..',
+            '1':'.----', '2':'..---', '3':'...--',
+            '4':'....-', '5':'.....', '6':'-....',
+            '7':'--...', '8':'---..', '9':'----.',
+            '0':'-----', ', ':'--..--', '.':'.-.-.-',
+            '?':'..--..', '/':'-..-.', '-':'-....-',
+            '(':'-.--.', ')':'-.--.-'
+    }
+    def __init__(self,
+                    message,
+                    *,
+                    dot_time=100,
+                    dash_time=200,
+                    character_delay=30,
+                    word_delay=60,
+                    repeat_delay=800,
+                    loops=1):
+        super().__init__(loops=loops)
+        self._cipher = ''
+        self._recipe = ''
+        message = message.upper()
+        for letter in message:
+            if letter != ' ':
+                self._cipher += MorseCode.DICT[letter] + ' '
+            else:
+                self._cipher += ' '
+        for character in self._cipher:
+            if character == '.':
+                self._recipe += f'T {dot_time} '
+            elif character == '-':
+                self._recipe += f'T {dash_time} '
+            elif character != ' ':
+                raise RuntimeError(f'Invalid Morse code character: {character}')
+
+            if character == ' ':
+                self._recipe += f'T {word_delay} '
+            else:
+                self._recipe += f'T {character_delay} '
+        if self._cipher != '':
+            self._recipe += f'T {repeat_delay}'
+
+    def recipe(self):
+        return self._recipe
