@@ -90,6 +90,6 @@ class Wheels:
         GPIO.output(self.right_wheel_pins, GPIO.LOW)
         self._disable_pins()
 
-class InvalidTimeoutError(Exception):
+class InvalidTimeoutError(RuntimeError):
     def __str__(self):
         return '"timeout" must be of type "int".'

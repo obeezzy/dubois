@@ -26,3 +26,10 @@ export class WheelEvent extends Event {
                 params);
     }
 }
+
+export class HeadlightEvent extends Event {
+    constructor(action, params={ oscillator: null }) {
+        super({ action: action, category: 'headlight' },
+                params);
+    }
+}

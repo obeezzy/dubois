@@ -1,11 +1,16 @@
 import websockets, asyncio, json
 from threading import Thread
+from dubois import Headlights, Wheels
+from ._events import WheelEvent, HeadlightEvent, EventDispatchFailedError
+from ._states import HeadlightState
 import _logging as logging
-from ._events import WheelEvent
 
 logger = logging.getLogger(__name__)
 ADDRESS = '0.0.0.0'
 PORT = 4201
+
+_headlights = Headlights()
+_wheels = Wheels()
 
 class RawEvent:
     def __init__(self, rawData):
@@ -31,14 +36,23 @@ class EventDispatchServerThread(Thread):
 
     async def _run(self, websocket, path):
         while True:
-            event = RawEvent(await websocket.recv())
-            logger.debug('Received from (%s): %s' \
-                        % (str(websocket.remote_address), event.action))
+            rawEvent = RawEvent(await websocket.recv())
+            logger.debug(f'Received from ({str(websocket.remote_address)}): ' \
+                            f'{rawEvent.action}')
 
-            if event.category == 'ping':
-                logger.debug('Ping received!')
-            elif event.category == 'wheel':
-                WheelEvent(event).dispatch()
+            try:
+                if rawEvent.category == 'ping':
+                    logger.debug('Ping received!')
+                elif rawEvent.category == 'wheel':
+                    WheelEvent(rawEvent, _wheels).dispatch()
+                elif rawEvent.category == 'headlight':
+                    HeadlightEvent(rawEvent, _headlights).dispatch()
+                    await websocket.send(str(HeadlightState(rawEvent.action, _headlights)))
+                else:
+                    raise EventDispatchFailedError(f'Unknown event category: {rawEvent.category}')
+            except EventDispatchFailedError as e:
+                logger.warning(repr(e))
+                await websocket.send(str(e))
 
 def start():
     EventDispatchServerThread().start()
