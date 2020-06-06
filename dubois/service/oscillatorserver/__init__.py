@@ -35,24 +35,23 @@ class PinOscillator(threading.Thread):
     def oscillate(self, *, rule=None):
         if rule is not None:
             self.rule = rule
-            print('Recipe: {self.rule}')
         self.start()
-        logger.debug(f'PinOscillator started for {self.pin}.')
+        logger.debug(f'PinOscillator({self.pin}) started.')
 
     def stop(self):
-        logger.debug(f'PinOscillator invoked stop() for {self.pin}.')
         self._stop_flag.set()
-        logger.debug(f'PinOscillator stopped for {self.pin}.')
+        GPIO.output(self.pin, GPIO.LOW)
+        logger.debug(f'PinOscillator({self.pin}) stopped.')
 
     @property
-    def stopped(self):
+    def _stopped(self):
         return self._stop_flag.isSet()
 
     def _wait(self, timeout):
-        self._stop_flag.wait(timeout)
+        self._stop_flag.wait(timeout / 1000)
 
     def run(self):
-        logger.debug(f'PinOscillator({self.pin}) started.')
+        logger.debug(f'PinOscillator({self.pin}) started execution.')
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT, initial=GPIO.LOW)
 
@@ -63,28 +62,31 @@ class PinOscillator(threading.Thread):
         pinActive = False
         loops = self.rule.loops
         while True:
+            if self._stopped:
+                break
             if loops > 0:
                 loops -= 1
             elif loops == 0:
                 break
             for symbol in recipeSymbols:
+                if self._stopped:
+                    break
                 if symbol.upper() == 'T':
                     pinActive = not pinActive
                     GPIO.output(self.pin, pinActive)
                 elif symbol.isdigit():
-                    delayInMs = int(symbol)
-                    if latency >= delayInMs:
-                        latency -= delayInMs
+                    delay = int(symbol)
+                    if latency >= delay:
+                        latency -= delay
                         continue
                     else:
-                        delayInMs -= latency
+                        delay -= latency
                         latency = 0
-                        self._wait(delayInMs / 1000)
+                        self._wait(delay)
                 else:
                     logger.warning(f'Unknown symbol: {symbol}')
 
         GPIO.output(self.pin, GPIO.LOW)
-        GPIO.cleanup()
         if self in _pin_oscillators:
             _pin_oscillators.remove(self)
         logger.debug(f'PinOscillator({self.pin}) finished execution.')
@@ -103,11 +105,11 @@ class OscillatorServerThread(threading.Thread):
                         f'{str(rule)}')
 
         if rule.action == 'add':
-            oscillatorsToUpdate = filter(lambda osc: True if osc.pin in rule.pins else False,
+            oscillators_to_update = filter(lambda osc: True if osc.pin in rule.pins else False,
                                             _pin_oscillators)
             pinsToAdd = list(rule.pins)
 
-            for osc in oscillatorsToUpdate:
+            for osc in oscillators_to_update:
                 osc.stop()
                 osc.oscillate(rule=rule)
                 pinsToAdd.remove(osc.pin)
@@ -116,9 +118,9 @@ class OscillatorServerThread(threading.Thread):
                 osc.oscillate()
                 _pin_oscillators.append(osc)
         elif rule.action == 'remove':
-            oscillatorsToRemove = filter(lambda osc: True if osc.pin in rule.pins else False,
+            oscillators_to_remove = filter(lambda osc: True if osc.pin in rule.pins else False,
                                             _pin_oscillators)
-            for osc in oscillatorsToRemove:
+            for osc in oscillators_to_remove:
                 osc.stop()
                 if osc in _pin_oscillators:
                     _pin_oscillators.remove(osc)
