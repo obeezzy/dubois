@@ -21,11 +21,12 @@ class DuboisClient {
     }
 
     recv(remoteState) {
+        remoteState = JSON.parse(remoteState)
         console.log('State received:', remoteState);
-        if (remoteState.category == 'error') {
-            console.log('Error state received:', remoteState.message);
-        } else if (remoteState.category == 'headlight') {
+        if (remoteState.category == 'headlight') {
             applyHeadlightState(new HeadlightState(remoteState));
+        } else if (remoteState.category == 'error') {
+            console.log('Error state received:', remoteState.message);
         }
     }
 }
@@ -59,12 +60,11 @@ customElements.define('joystick-area',
     }
 );
 
-let powerOn = false;
+let headlightsOn = false;
 document.getElementById('headlight').addEventListener('click', (event) => {
-    powerOn = !powerOn;
-    duboisClient.send(new HeadlightEvent(powerOn ? 'power_on' : 'power_off'));
+    duboisClient.send(new HeadlightEvent(headlightsOn ? 'power_off' : 'power_on' ));
 });
 
 const applyHeadlightState = (state) => {
-    console.log('Headlights state received:', state.pinActive);
+    headlightsOn = state.pinActive;
 };
