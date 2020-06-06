@@ -16,7 +16,7 @@ def index():
                             title='Dubois',
                             greeting="Hi, I'm Dubois 🤖",
                             instructions='Drag your thumb across the screen to move me around.',
-                            debug=False)
+                            debug=True)
 
 def start():
     Thread(target=app.run,
