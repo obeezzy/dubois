@@ -242,3 +242,11 @@ class MorseCode(Oscillator):
 
     def recipe(self):
         return self._recipe
+
+class Monostable(Oscillator):
+    def __init__(self, *,
+                    on_time=3000):
+        super().__init__(loops=1)
+        self.on_time = on_time
+    def recipe(self):
+        return f'T {self.on_time} T'
