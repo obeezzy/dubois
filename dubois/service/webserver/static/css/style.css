@@ -74,7 +74,11 @@ h6 {
     align-items: stretch;
     background-color: var(--primary-color-light);
     min-height: 50px;
-    padding-top: 4px;
+    padding: 4px 4px 0px 4px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .panel__container {
@@ -91,6 +95,10 @@ h6 {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+
+.panel__item:active {
+    background-color: var(--secondary-color-light);
 }
 
 .panel__item__icon {

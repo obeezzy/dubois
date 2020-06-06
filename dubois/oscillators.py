@@ -30,6 +30,7 @@ class Oscillator(ABC):
     def __init__(self, *, loops=INFINITE):
         self._client = OscillatorClient()
         self.loops = loops
+        self.rule = None
 
     @property
     @abstractmethod
@@ -49,6 +50,15 @@ class Oscillator(ABC):
         if hasattr(self, 'rule') and self.rule is not None:
             self._client.unregister(self.rule)
 
+    def __repr__(self):
+        return f'Oscillator(rule={repr(self.rule)}, loops={self.loops})'
+
+    def __str__(self):
+        return json.dumps({
+            'rule': json.loads(str(self.rule)),
+            'loops': self.loops,
+        })
+
 class OscillatorRule:
     def __init__(self, *,
                     pins,
@@ -61,6 +71,15 @@ class OscillatorRule:
         self.pins = pins
         self.recipe = recipe
         self.timestamp = timestamp
+
+    def __repr__(self):
+        return (f'OscillatorRule('
+                f'action={self.action}, '
+                f'loops={self.loops}, '
+                f'pins={self.pins}, '
+                f'recipe={self.recipe}, ',
+                f'timestamp={self.timestamp}'
+                f')')
 
     def __str__(self):
         return json.dumps({
