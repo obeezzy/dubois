@@ -178,3 +178,12 @@ class Inline(Oscillator):
                     raise InvalidRecipeError(f'Invalid argument: {symbol}')
     def recipe(self):
         return self._recipe
+
+class Sos(Oscillator):
+    def __init__(self, *, repeat_delay=1000):
+        super().__init__()
+        self.repeat_delay = repeat_delay
+    def recipe(self):
+        return (f'T 100 T 30 T 100 T 30 T 100 T 30 T '
+                f'200 T 30 T 200 T 30 T 200 T 30 '
+                f'T 100 T 30 T 100 T 30 T 100 T {self.repeat_delay}')
