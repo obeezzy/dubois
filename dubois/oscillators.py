@@ -181,13 +181,27 @@ class Inline(Oscillator):
 
 class Sos(Oscillator):
     def __init__(self, *,
-                    repeat_delay=800):
-        super().__init__()
+                    dot_time=100,
+                    dash_time=200,
+                    character_delay=30,
+                    repeat_delay=800,
+                    loops=1):
+        super().__init__(loops=loops)
+        self.dot_time = dot_time
+        self.dash_time = dash_time
+        self.character_delay = character_delay
         self.repeat_delay = repeat_delay
     def recipe(self):
-        return (f'T 100 T 30 T 100 T 30 T 100 T 30 T '
-                f'200 T 30 T 200 T 30 T 200 T 30 '
-                f'T 100 T 30 T 100 T 30 T 100 T {self.repeat_delay}')
+        return (f'T {self.dot_time} T {self.character_delay} '
+                f'T {self.dot_time} T {self.character_delay} '
+                f'T {self.dot_time} T {self.character_delay} '
+                f'T {self.dash_time} T {self.character_delay} '
+                f'T {self.dash_time} T {self.character_delay} '
+                f'T {self.dash_time} T {self.character_delay} '
+                f'T {self.dot_time} T {self.character_delay} '
+                f'T {self.dot_time} T {self.character_delay} '
+                f'T {self.dot_time} T {self.character_delay} '
+                f'T {self.dot_time} T {self.repeat_delay}')
 
 class MorseCode(Oscillator):
     DICT = {
