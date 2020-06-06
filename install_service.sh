@@ -7,6 +7,8 @@ echo "Creating environment file..."
 mkdir -p /etc/dubois  
 echo "DUBOIS_DIR=$CWD" > /etc/dubois/dubois.conf
 cat >> /etc/dubois/dubois.conf << EOF
+# Uncomment to specify log level. Valid values are debug, info, warning and critical.
+# LOGLEVEL=warning
 
 ###################### Environment ############################
 # All pin numbers specified are Broadcom (BCM).
