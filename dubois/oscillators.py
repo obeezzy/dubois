@@ -6,7 +6,9 @@ ADDRESS = '127.0.0.1'
 PORT = 4202
 
 class OscillatorClient:
-    def __init__(self, *, server_address=ADDRESS, server_port=PORT):
+    def __init__(self, *,
+                    server_address=ADDRESS,
+                    server_port=PORT):
         self.uri = f'ws://{server_address}:{server_port}'
 
     def register(self, rule):
@@ -92,8 +94,17 @@ class OscillatorRule:
                                 else 0,
             })
 
+class InvalidRecipeError(RuntimeError):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return self.message
+
 class Flash(Oscillator):
-    def __init__(self, *, on_time=500, off_time=500, loops=Oscillator.INFINITE):
+    def __init__(self, *,
+                    on_time=500,
+                    off_time=500,
+                    loops=Oscillator.INFINITE):
         super().__init__(loops=loops)
         self.on_time = on_time
         self.off_time = off_time
@@ -102,7 +113,10 @@ class Flash(Oscillator):
                 f'T {self.off_time}')
 
 class DoubleFlash(Oscillator):
-    def __init__(self, *, burst_time=50, off_time=500, loops=Oscillator.INFINITE):
+    def __init__(self, *,
+                    burst_time=50,
+                    off_time=500,
+                    loops=Oscillator.INFINITE):
         super().__init__(loops=loops)
         self.burst_time = burst_time
         self.off_time = off_time
@@ -113,7 +127,10 @@ class DoubleFlash(Oscillator):
                 f'T {self.off_time}')
 
 class TripleFlash(Oscillator):
-    def __init__(self, *, burst_time=50, off_time=500, loops=Oscillator.INFINITE):
+    def __init__(self, *,
+                    burst_time=50,
+                    off_time=500,
+                    loops=Oscillator.INFINITE):
         super().__init__(loops=loops)
         self.burst_time = burst_time
         self.off_time = off_time
@@ -138,8 +155,26 @@ class AlwaysOff(Oscillator):
         return ''
 
 class Inline(Oscillator):
-    def __init__(self, recipe, *, loops=Oscillator.INFINITE):
-        super().__init__(loops=loops)
-        self._recipe = recipe
+    def __init__(self,
+                    *recipe,
+                    loops=Oscillator.INFINITE):
+        super().__init__(loops=1 \
+                            if len(recipe) is 1 and isinstance(recipe[0], int) \
+                            else Oscillator.INFINITE)
+        if len(recipe) is 1 and isinstance(recipe[0], str):
+            self._recipe = recipe
+        elif len(recipe) is 1 and isinstance(recipe[0], int):
+            self._recipe = f'T {recipe[0]} T'
+        elif len(recipe) > 0:
+            recipe = recipe[0] \
+                    if len(recipe) is 1 \
+                        and isinstance(recipe[0], list) \
+                    else recipe
+            self._recipe = ''
+            for symbol in recipe:
+                if isinstance(symbol, int):
+                    self._recipe += 'T ' + str(symbol)
+                else:
+                    raise InvalidRecipeError(f'Invalid argument: {symbol}')
     def recipe(self):
         return self._recipe

@@ -15,7 +15,8 @@ def index():
     return render_template('index.html',
                             title='Dubois',
                             greeting="Hi, I'm Dubois 🤖",
-                            instructions='Drag your thumb across the screen to move me around.')
+                            instructions='Drag your thumb across the screen to move me around.',
+                            debug=False)
 
 def start():
     Thread(target=app.run,

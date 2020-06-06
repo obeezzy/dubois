@@ -6,7 +6,7 @@
         <link rel='stylesheet' href='/static/css/style.css'>
         <link rel='shortcut icon' href='/static/favicon.ico'>
         <script type='module' src='/static/js/app.js'></script>
-        <script src='/static/js/vendor/live.js'></script>
+        {% if debug %}<script src='/static/js/vendor/live.js'></script>{% endif %}
         <title>{{ title }}</title>
     </head>
     <body>

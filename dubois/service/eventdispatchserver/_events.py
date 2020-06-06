@@ -45,6 +45,9 @@ class WheelEvent(Event):
         return (f'WheelEvent(action={self.action}, '
                 f'timeout={self.timeout})')
 
+    def __str__(self):
+        return self.__repr(self)
+
 class HeadlightEvent(Event):
     def __init__(self, rawEvent, headlights):
         self.action = rawEvent.action
@@ -60,3 +63,6 @@ class HeadlightEvent(Event):
 
     def __repr__(self):
         return (f'HeadlightEvent(action={self.action})')
+
+    def __str__(self):
+        return self.__repr(self)

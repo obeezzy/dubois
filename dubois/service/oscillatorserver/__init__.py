@@ -1,6 +1,6 @@
-import websockets, asyncio, json, time
+import websockets, asyncio, json
 import RPi.GPIO as GPIO
-from threading import Thread
+import threading
 import _logging as logging
 
 logger = logging.getLogger(__name__)
@@ -25,24 +25,31 @@ class OscillatorRule:
                 f'recipe={self.recipe}, ' 
                 f'timestamp={self.timestamp})')
 
-class PinOscillator(Thread):
+class PinOscillator(threading.Thread):
     def __init__(self, *, pin, rule):
         super().__init__()
         self.pin = pin
         self.rule = rule
-        self._stopRequested = False
+        self._stop_flag = threading.Event()
 
     def oscillate(self, *, rule=None):
         if rule is not None:
             self.rule = rule
+            print('Recipe: {self.rule}')
         self.start()
         logger.debug(f'PinOscillator started for {self.pin}.')
 
     def stop(self):
         logger.debug(f'PinOscillator invoked stop() for {self.pin}.')
-        self._stopRequested = True
-        self.join()
-        logger.debug(f'PinOscillator stopped() for {self.pin}.')
+        self._stop_flag.set()
+        logger.debug(f'PinOscillator stopped for {self.pin}.')
+
+    @property
+    def stopped(self):
+        return self._stop_flag.isSet()
+
+    def _wait(self, timeout):
+        self._stop_flag.wait(timeout)
 
     def run(self):
         logger.debug(f'PinOscillator({self.pin}) started.')
@@ -55,15 +62,13 @@ class PinOscillator(Thread):
         recipeSymbols = self.rule.recipe.split(' ')
         pinActive = False
         loops = self.rule.loops
-        while not self._stopRequested:
+        while True:
             if loops > 0:
                 loops -= 1
             elif loops == 0:
                 break
             for symbol in recipeSymbols:
-                if self._stopRequested:
-                    break
-                elif symbol.upper() == 'T':
+                if symbol.upper() == 'T':
                     pinActive = not pinActive
                     GPIO.output(self.pin, pinActive)
                 elif symbol.isdigit():
@@ -74,15 +79,17 @@ class PinOscillator(Thread):
                     else:
                         delayInMs -= latency
                         latency = 0
-                        time.sleep(delayInMs / 1000)
+                        self._wait(delayInMs / 1000)
                 else:
                     logger.warning(f'Unknown symbol: {symbol}')
 
         GPIO.output(self.pin, GPIO.LOW)
         GPIO.cleanup()
-        logger.debug(f'PinOscillator({self.pin}) terminated.')
+        if self in _pin_oscillators:
+            _pin_oscillators.remove(self)
+        logger.debug(f'PinOscillator({self.pin}) finished execution.')
 
-class OscillatorServerThread(Thread):
+class OscillatorServerThread(threading.Thread):
     def run(self):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -113,7 +120,8 @@ class OscillatorServerThread(Thread):
                                             _pin_oscillators)
             for osc in oscillatorsToRemove:
                 osc.stop()
-                _pin_oscillators.remove(osc)
+                if osc in _pin_oscillators:
+                    _pin_oscillators.remove(osc)
         elif rule.action == 'remove_all':
             for osc in _pin_oscillators:
                 osc.stop()
