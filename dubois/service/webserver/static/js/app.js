@@ -1,6 +1,6 @@
 import { VirtualJoystick } from './vendor/virtualjoystick.js';
-import { WheelEvent, HeadlightEvent } from './_events.js';
-import { ErrorState, HeadlightState } from './_states.js';
+import { WheelEvent, BuzzerEvent, HeadlightEvent } from './_events.js';
+import { ErrorState, BuzzerState, HeadlightState } from './_states.js';
 
 class DuboisClient {
     constructor(serverAddress=document.domain, serverPort=4201) {
@@ -23,7 +23,9 @@ class DuboisClient {
     recv(remoteState) {
         remoteState = JSON.parse(remoteState)
         console.log('State received:', remoteState);
-        if (remoteState.category == 'headlight') {
+        if (remoteState.category == 'buzzer') {
+            applyBuzzerState(new BuzzerState(remoteState));
+        } else if (remoteState.category == 'headlight') {
             applyHeadlightState(new HeadlightState(remoteState));
         } else if (remoteState.category == 'error') {
             console.log('Error state received:', remoteState.message);
@@ -59,6 +61,15 @@ customElements.define('joystick-area',
         }
     }
 );
+
+let buzzerOn = false;
+document.getElementById('buzzer').addEventListener('click', (event) => {
+    duboisClient.send(new BuzzerEvent(buzzerOn ? 'power_off' : 'power_on' ));
+});
+
+const applyBuzzerState = (state) => {
+    buzzerOn = state.pinActive;
+}
 
 let headlightsOn = false;
 document.getElementById('headlight').addEventListener('click', (event) => {

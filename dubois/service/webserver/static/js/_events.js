@@ -27,6 +27,13 @@ export class WheelEvent extends Event {
     }
 }
 
+export class BuzzerEvent extends Event {
+    constructor(action, params={ oscillator: null }) {
+        super({ action: action, category: 'buzzer' },
+                params);
+    }
+}
+
 export class HeadlightEvent extends Event {
     constructor(action, params={ oscillator: null }) {
         super({ action: action, category: 'headlight' },

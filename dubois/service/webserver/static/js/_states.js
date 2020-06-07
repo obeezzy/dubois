@@ -11,6 +11,14 @@ export class ErrorState extends State {
     }
 }
 
+export class BuzzerState extends State {
+    constructor(stateData) {
+        super(stateData);
+        this.pinActive = stateData.pinActive;
+        this.oscillator = stateData.oscillator;
+    }
+}
+
 export class HeadlightState extends State {
     constructor(stateData) {
         super(stateData);

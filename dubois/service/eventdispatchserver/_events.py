@@ -66,3 +66,22 @@ class HeadlightEvent(Event):
 
     def __str__(self):
         return self.__repr(self)
+
+class BuzzerEvent(Event):
+    def __init__(self, rawEvent, buzzer):
+        self.action = rawEvent.action
+        self._buzzer = buzzer
+
+    def dispatch(self):
+        if self.action == 'power_on':
+            self._buzzer.power_on()
+        elif self.action == 'power_off':
+            self._buzzer.power_off()
+        else:
+            raise EventDispatchFailedError(f'Unhandled action: {self.action}')
+
+    def __repr__(self):
+        return (f'BuzzerEvent(action={self.action})')
+
+    def __str__(self):
+        return self.__repr(self)
