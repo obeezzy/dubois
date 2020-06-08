@@ -27,6 +27,10 @@ class AggregateState(State):
         self.headlight_state = HeadlightState(headlights=headlights)
         self.indicator_state = IndicatorState(indicator=indicator)
 
+    @property
+    def last_action(self):
+        return self._last_action
+
     def __iter__(self):
         return iter({
             'category': self.category,
@@ -61,11 +65,13 @@ class BuzzerState(State):
                         if self._buzzer is not None \
                         else None)
         return (f'BuzzerState(pin_active={self.pin_active}, '
+                f'last_action={self.last_action}, '
                 f'oscillator={oscillator})')
 
     def __iter__(self):
         return iter({
             'category': self.category,
+            'lastAction': self.last_action,
             'pinActive': self.pin_active,
             'oscillator': dict(self._buzzer.oscillator) \
                             if self._buzzer is not None \
@@ -97,11 +103,13 @@ class HeadlightState(State):
                         if self._buzzer is not None \
                         else None)
         return (f'HeadlightState(pin_active={self.pin_active}, '
+                f'last_action={self.last_action}, '
                 f'oscillator={oscillator})')
 
     def __iter__(self):
         return iter({
             'category': self.category,
+            'lastAction': self.last_action,
             'pinActive': self.pin_active,
             'oscillator': dict(self._headlights.oscillator) \
                             if self._headlights is not None \
@@ -133,11 +141,13 @@ class IndicatorState(State):
                         if self._indicator is not None \
                         else None)
         return (f'IndicatorState(pins_active={str(self.pins_active)}, '
+                f'last_action={self.last_action}, '
                 f'oscillators={oscillators})')
 
     def __iter__(self):
         return iter({
             'category': self.category,
+            'lastAction': self.last_action,
             'pinsActive': self.pins_active,
             'oscillators': list(accumulate(dict(self._indicator.oscillators)))
                             if self._indicator is not None \

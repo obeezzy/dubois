@@ -42,7 +42,7 @@ export class HeadlightEvent extends Event {
 }
 
 export class IndicatorEvent extends Event {
-    constructor(action, params={ oscillator: null }) {
+    constructor(action, params={ oscillators: null }) {
         super({ action: action, category: 'indicator' },
                 params);
     }
