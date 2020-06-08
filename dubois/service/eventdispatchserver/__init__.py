@@ -50,33 +50,36 @@ class EventDispatchServerThread(Thread):
     async def _run(self, websocket, path):
         await websocket.send(json.dumps(dict(_aggregate)))
         self._clients.append(websocket)
-        while True:
-            rawEvent = RawEvent(await websocket.recv())
-            logger.debug(f'Received from ({str(websocket.remote_address)}): ' \
-                            f'{str(rawEvent)}')
+        try:
+            while True:
+                rawEvent = RawEvent(await websocket.recv())
+                logger.debug(f'Received from ({str(websocket.remote_address)}): ' \
+                                f'{str(rawEvent)}')
 
-            try:
-                if rawEvent.category == 'buzzer':
-                    BuzzerEvent(rawEvent, _buzzer).dispatch()
-                    _aggregate.buzzer_state.last_action = rawEvent.action
-                    await self._broadcast(json.dumps(dict(_aggregate.buzzer_state)))
-                elif rawEvent.category == 'headlight':
-                    HeadlightEvent(rawEvent, _headlights).dispatch()
-                    _aggregate.headlight_state.last_action = rawEvent.action
-                    await self._broadcast(json.dumps(dict(_aggregate.headlight_state)))
-                elif rawEvent.category == 'indicator':
-                    IndicatorEvent(rawEvent, _indicator).dispatch()
-                    _aggregate.indicator_state.last_action = rawEvent.action
-                    await self._broadcast(json.dumps(dict(_aggregate.indicator_state)))
-                elif rawEvent.category == 'wheel':
-                    WheelEvent(rawEvent, _wheels).dispatch()
-                elif rawEvent.category == 'ping':
-                    logger.debug('Ping received!')
-                else:
-                    raise EventDispatchFailedError(f'Unknown event category: {rawEvent.category}')
-            except EventDispatchFailedError as e:
-                logger.warning(str(e))
-                await websocket.send(json.dumps(dict(e)))
+                try:
+                    if rawEvent.category == 'buzzer':
+                        BuzzerEvent(rawEvent, _buzzer).dispatch()
+                        _aggregate.buzzer_state.last_action = rawEvent.action
+                        await self._broadcast(json.dumps(dict(_aggregate.buzzer_state)))
+                    elif rawEvent.category == 'headlight':
+                        HeadlightEvent(rawEvent, _headlights).dispatch()
+                        _aggregate.headlight_state.last_action = rawEvent.action
+                        await self._broadcast(json.dumps(dict(_aggregate.headlight_state)))
+                    elif rawEvent.category == 'indicator':
+                        IndicatorEvent(rawEvent, _indicator).dispatch()
+                        _aggregate.indicator_state.last_action = rawEvent.action
+                        await self._broadcast(json.dumps(dict(_aggregate.indicator_state)))
+                    elif rawEvent.category == 'wheel':
+                        WheelEvent(rawEvent, _wheels).dispatch()
+                    elif rawEvent.category == 'ping':
+                        logger.debug('Ping received!')
+                    else:
+                        raise EventDispatchFailedError(f'Unknown event category: {rawEvent.category}')
+                except EventDispatchFailedError as e:
+                    logger.warning(str(e))
+                    await websocket.send(json.dumps(dict(e)))
+        finally:
+            self._clients.remove(websocket)
 
 _aggregate = AggregateState(buzzer=_buzzer,
                             headlights=_headlights,
