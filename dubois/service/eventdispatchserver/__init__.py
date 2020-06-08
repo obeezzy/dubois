@@ -3,7 +3,7 @@ from threading import Thread
 from dubois import Buzzer, Headlights, Indicator, Wheels
 from ._events import BuzzerEvent, HeadlightEvent, IndicatorEvent, WheelEvent
 from ._events import EventDispatchFailedError
-from ._states import BuzzerState, HeadlightState, IndicatorState
+from ._states import AggregateState, BuzzerState, HeadlightState, IndicatorState
 import _logging as logging
 
 logger = logging.getLogger(__name__)
@@ -36,13 +36,20 @@ class RawEvent:
 
 class EventDispatchServerThread(Thread):
     def run(self):
+        self._clients = []
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         start_server = websockets.serve(self._run, ADDRESS, PORT)
         loop.run_until_complete(start_server)
         loop.run_forever()
 
+    async def _broadcast(self, data):
+        for websocket in self._clients:
+            await websocket.send(data)
+
     async def _run(self, websocket, path):
+        await websocket.send(json.dumps(dict(_aggregate)))
+        self._clients.append(websocket)
         while True:
             rawEvent = RawEvent(await websocket.recv())
             logger.debug(f'Received from ({str(websocket.remote_address)}): ' \
@@ -51,13 +58,16 @@ class EventDispatchServerThread(Thread):
             try:
                 if rawEvent.category == 'buzzer':
                     BuzzerEvent(rawEvent, _buzzer).dispatch()
-                    await websocket.send(json.dumps(dict(BuzzerState(rawEvent.action, _buzzer))))
+                    _aggregate.buzzer_state.last_action = rawEvent.action
+                    await _self._broadcast(json.dumps(dict(_aggregate.buzzer_state)))
                 elif rawEvent.category == 'headlight':
                     HeadlightEvent(rawEvent, _headlights).dispatch()
-                    await websocket.send(json.dumps(dict(HeadlightState(rawEvent.action, _headlights))))
+                    _aggregate.headlight_state.last_action = rawEvent.action
+                    await self._broadcast(json.dumps(dict(_aggregate.headlight_state)))
                 elif rawEvent.category == 'indicator':
                     IndicatorEvent(rawEvent, _indicator).dispatch()
-                    await websocket.send(json.dumps(dict(IndicatorState(rawEvent.action, _indicator))))
+                    _aggregate.indicator_state.last_action = rawEvent.action
+                    await self._broadcast(json.dumps(dict(_aggregate.indicator_state)))
                 elif rawEvent.category == 'wheel':
                     WheelEvent(rawEvent, _wheels).dispatch()
                 elif rawEvent.category == 'ping':
@@ -67,6 +77,10 @@ class EventDispatchServerThread(Thread):
             except EventDispatchFailedError as e:
                 logger.warning(str(e))
                 await websocket.send(json.dumps(dict(e)))
+
+_aggregate = AggregateState(buzzer=_buzzer,
+                            headlights=_headlights,
+                            indicator=_indicator)
 
 def start():
     EventDispatchServerThread().start()
