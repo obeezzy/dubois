@@ -52,14 +52,14 @@ class Oscillator(ABC):
         if hasattr(self, 'rule') and self.rule is not None:
             self._client.unregister(self.rule)
 
-    def __repr__(self):
-        return f'Oscillator(rule={repr(self.rule)}, loops={self.loops})'
+    def __iter__(self):
+        return iter({
+            'rule': dict(self.rule),
+            'loops': self.loops,
+        }.items())
 
     def __str__(self):
-        return json.dumps({
-            'rule': json.loads(str(self.rule)),
-            'loops': self.loops,
-        })
+        return f'Oscillator(rule={str(self.rule)}, loops={self.loops})'
 
 class OscillatorRule:
     def __init__(self, *,
@@ -74,7 +74,7 @@ class OscillatorRule:
         self.recipe = recipe
         self.timestamp = timestamp
 
-    def __repr__(self):
+    def __str__(self):
         return (f'OscillatorRule('
                 f'action={self.action}, '
                 f'loops={self.loops}, '
@@ -83,16 +83,16 @@ class OscillatorRule:
                 f'timestamp={self.timestamp}'
                 f')')
 
-    def __str__(self):
-        return json.dumps({
-                'action': self.action,
-                'loops': self.loops,
-                'pins': self.pins,
-                'recipe': self.recipe,
-                'timestamp': self.timestamp \
-                                if self.timestamp is not None \
-                                else 0,
-            })
+    def __iter__(self):
+        return iter({
+            'action': self.action,
+            'loops': self.loops,
+            'pins': self.pins,
+            'recipe': self.recipe,
+            'timestamp': self.timestamp \
+                            if self.timestamp is not None \
+                            else 0,
+        }.items())
 
 class InvalidRecipeError(RuntimeError):
     def __init__(self, message):

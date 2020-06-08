@@ -40,3 +40,10 @@ export class HeadlightEvent extends Event {
                 params);
     }
 }
+
+export class IndicatorEvent extends Event {
+    constructor(action, params={ oscillator: null }) {
+        super({ action: action, category: 'indicator' },
+                params);
+    }
+}

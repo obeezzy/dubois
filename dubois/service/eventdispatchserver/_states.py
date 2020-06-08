@@ -1,5 +1,5 @@
 import json
-from dubois.oscillators import OscillatorRule
+from itertools import accumulate
 import _logging as logging
 
 logger = logging.getLogger(__name__)
@@ -19,18 +19,18 @@ class BuzzerState(State):
         elif action == 'power_off':
             self.pin_active = False
 
-    def __repr__(self):
+    def __str__(self):
         return (f'BuzzerState(pin_active={self.pin_active}, '
                 f'oscillator={str(self._buzzer.oscillator)})')
 
-    def __str__(self):
-        return json.dumps({
+    def __iter__(self):
+        return iter({
             'category': self.category,
             'pinActive': self.pin_active,
-            'oscillator': str(self._buzzer.oscillator.rule) \
-                                if self._buzzer.oscillator is not None \
-                                else None,
-        })
+            'oscillator': dict(self._buzzer.oscillator) \
+                            if self._buzzer.oscillator is not None \
+                            else None
+        }.items())
 
 class HeadlightState(State):
     def __init__(self, action, headlights):
@@ -42,15 +42,38 @@ class HeadlightState(State):
         elif action == 'power_off':
             self.pin_active = False
 
-    def __repr__(self):
+    def __str__(self):
         return (f'HeadlightState(pin_active={self.pin_active}, '
                 f'oscillator={str(self._headlights.oscillator)})')
 
-    def __str__(self):
-        return json.dumps({
+    def __iter__(self):
+        return iter({
             'category': self.category,
             'pinActive': self.pin_active,
-            'oscillator': str(self._headlights.oscillator.rule) \
-                                if self._headlights.oscillator is not None \
-                                else None,
-        })
+            'oscillator': dict(self._headlights.oscillator) \
+                            if self._headlights.oscillator is not None \
+                            else None
+        }.items())
+
+class IndicatorState(State):
+    def __init__(self, action, indicator):
+        super().__init__('indicator', action)
+        self._indicator = indicator
+        self.pins_active = (False, False, False)
+        if action == 'power_on':
+            self.pins_active = (True, True, True)
+        elif action == 'power_off':
+            self.pins_active = (False, False, False)
+
+    def __str__(self):
+        return (f'IndicatorState(pins_active={str(self.pins_active)}, '
+                f'oscillators={str(self._indicator.oscillators)})')
+
+    def __iter__(self):
+        return iter({
+            'category': self.category,
+            'pinsActive': self.pins_active,
+            'oscillators': list(accumulate(dict(self._indicator.oscillators)))
+                            if self._indicator.oscillators is not None \
+                            else None
+        }.items())

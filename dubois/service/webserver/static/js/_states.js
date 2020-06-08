@@ -5,24 +5,39 @@ class State {
 }
 
 export class ErrorState extends State {
-    constructor(stateData) {
+    constructor(stateData={category: 'error'}) {
         super(stateData);
         this.message = stateData;
     }
 }
 
 export class BuzzerState extends State {
-    constructor(stateData) {
+    constructor(stateData={category: 'buzzer'}) {
         super(stateData);
-        this.pinActive = stateData.pinActive;
-        this.oscillator = stateData.oscillator;
+        this.pinActive = stateData.pinActive || false;
+        this.oscillator = stateData.oscillator || null;
     }
 }
 
 export class HeadlightState extends State {
-    constructor(stateData) {
+    constructor(stateData={category: 'headlight'}) {
         super(stateData);
-        this.pinActive = stateData.pinActive;
-        this.oscillator = stateData.oscillator;
+        this.pinActive = stateData.pinActive || false;
+        this.oscillator = stateData.oscillator || null;
+    }
+}
+
+export class IndicatorState extends State {
+    constructor(stateData={category: 'indicator'}) {
+        super(stateData);
+        this.pinsActive = stateData.pinsActive || null;
+        this.oscillators = stateData.oscillators || null;
+    }
+
+    get anyPinActive() {
+        if (this.pinsActive === null)
+            return false;
+
+        return this.pinsActive.filter(pinActive => pinActive).length > 0;
     }
 }

@@ -1,9 +1,9 @@
 import websockets, asyncio, json
 from threading import Thread
-from dubois import Buzzer, Headlights, Wheels
-from ._events import BuzzerEvent, HeadlightEvent, WheelEvent
+from dubois import Buzzer, Headlights, Indicator, Wheels
+from ._events import BuzzerEvent, HeadlightEvent, IndicatorEvent, WheelEvent
 from ._events import EventDispatchFailedError
-from ._states import BuzzerState, HeadlightState
+from ._states import BuzzerState, HeadlightState, IndicatorState
 import _logging as logging
 
 logger = logging.getLogger(__name__)
@@ -12,6 +12,7 @@ PORT = 4201
 
 _buzzer = Buzzer()
 _headlights = Headlights()
+_indicator = Indicator()
 _wheels = Wheels()
 
 class RawEvent:
@@ -21,17 +22,17 @@ class RawEvent:
         self.category = event['category']
         self.params = event['params']
 
-    def __repr__(self):
+    def __str__(self):
         return (f'RawEvent(action={self.action}, '
                 f'category={self.category}, '
                 f'params={self.params})')
 
-    def __str__(self):
-        return {
+    def __iter__(self):
+        return iter({
             'action': self.action,
             'category': self.category,
             'params': self.params
-        }
+        }.items())
 
 class EventDispatchServerThread(Thread):
     def run(self):
@@ -45,15 +46,18 @@ class EventDispatchServerThread(Thread):
         while True:
             rawEvent = RawEvent(await websocket.recv())
             logger.debug(f'Received from ({str(websocket.remote_address)}): ' \
-                            f'{repr(rawEvent)}')
+                            f'{str(rawEvent)}')
 
             try:
                 if rawEvent.category == 'buzzer':
                     BuzzerEvent(rawEvent, _buzzer).dispatch()
-                    await websocket.send(str(BuzzerState(rawEvent.action, _buzzer)))
+                    await websocket.send(json.dumps(dict(BuzzerState(rawEvent.action, _buzzer))))
                 elif rawEvent.category == 'headlight':
                     HeadlightEvent(rawEvent, _headlights).dispatch()
-                    await websocket.send(str(HeadlightState(rawEvent.action, _headlights)))
+                    await websocket.send(json.dumps(dict(HeadlightState(rawEvent.action, _headlights))))
+                elif rawEvent.category == 'indicator':
+                    IndicatorEvent(rawEvent, _indicator).dispatch()
+                    await websocket.send(json.dumps(dict(IndicatorState(rawEvent.action, _indicator))))
                 elif rawEvent.category == 'wheel':
                     WheelEvent(rawEvent, _wheels).dispatch()
                 elif rawEvent.category == 'ping':
@@ -61,8 +65,8 @@ class EventDispatchServerThread(Thread):
                 else:
                     raise EventDispatchFailedError(f'Unknown event category: {rawEvent.category}')
             except EventDispatchFailedError as e:
-                logger.warning(repr(e))
-                await websocket.send(str(e))
+                logger.warning(str(e))
+                await websocket.send(json.dumps(dict(e)))
 
 def start():
     EventDispatchServerThread().start()

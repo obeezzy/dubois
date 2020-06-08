@@ -1,0 +1,12 @@
+import { BuzzerState, HeadlightState, IndicatorState } from './_states.js';
+
+class Robot {
+    constructor() {
+        this.buzzerState = new BuzzerState();
+        this.headlightState = new HeadlightState();
+        this.indicatorState = new IndicatorState();
+    }
+}
+
+export const robot = new Robot();
+export const Color = Object.freeze({'RED': 0, 'GREEN': 1, 'BLUE': 2});

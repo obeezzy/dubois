@@ -1,6 +1,7 @@
 import { VirtualJoystick } from './vendor/virtualjoystick.js';
-import { WheelEvent, BuzzerEvent, HeadlightEvent } from './_events.js';
-import { ErrorState, BuzzerState, HeadlightState } from './_states.js';
+import { robot } from './robot.js';
+import { BuzzerEvent, HeadlightEvent, IndicatorEvent, WheelEvent } from './_events.js';
+import { BuzzerState, ErrorState, HeadlightState, IndicatorState } from './_states.js';
 
 class DuboisClient {
     constructor(serverAddress=document.domain, serverPort=4201) {
@@ -27,6 +28,8 @@ class DuboisClient {
             applyBuzzerState(new BuzzerState(remoteState));
         } else if (remoteState.category == 'headlight') {
             applyHeadlightState(new HeadlightState(remoteState));
+        } else if (remoteState.category == 'indicator') {
+            applyIndicatorState(new IndicatorState(remoteState));
         } else if (remoteState.category == 'error') {
             console.log('Error state received:', remoteState.message);
         }
@@ -62,20 +65,26 @@ customElements.define('joystick-area',
     }
 );
 
-let buzzerOn = false;
-document.getElementById('buzzer').addEventListener('click', (event) => {
-    duboisClient.send(new BuzzerEvent(buzzerOn ? 'power_off' : 'power_on' ));
-});
-
 const applyBuzzerState = (state) => {
-    buzzerOn = state.pinActive;
+    robot.buzzerState = state;
 }
 
-let headlightsOn = false;
-document.getElementById('headlight').addEventListener('click', (event) => {
-    duboisClient.send(new HeadlightEvent(headlightsOn ? 'power_off' : 'power_on' ));
+const applyHeadlightState = (state) => {
+    robot.headlightState = state;
+};
+
+const applyIndicatorState = (state) => {
+    robot.indicatorState = state;
+};
+
+document.getElementById('buzzer').addEventListener('click', (event) => {
+    duboisClient.send(new BuzzerEvent(robot.buzzerState.pinActive ? 'power_off' : 'power_on' ));
 });
 
-const applyHeadlightState = (state) => {
-    headlightsOn = state.pinActive;
-};
+document.getElementById('headlight').addEventListener('click', (event) => {
+    duboisClient.send(new HeadlightEvent(robot.headlightState.pinActive ? 'power_off' : 'power_on' ));
+});
+
+document.getElementById('indicator').addEventListener('click', (event) => {
+    duboisClient.send(new IndicatorEvent(robot.indicatorState.anyPinActive ? 'power_off' : 'power_on' ));
+});
