@@ -48,7 +48,7 @@ class Indicator:
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 0 and oscillators[Color.RED] is None):
-                GPIO.output(self.pins[Color.RED], GPIO.LOW)
+                GPIO.output(self.pins[Color.RED], GPIO.HIGH)
             elif len(oscillators) > 0 and oscillators[Color.RED] is not None:
                 if oscillators is not None \
                         and not isinstance(oscillators[Color.RED], Oscillator):
@@ -59,8 +59,8 @@ class Indicator:
                                             timestamp=timestamp)
             if oscillators is None \
                     or len(oscillators) is 0 \
-                    or (len(oscillators) > 1 and oscillatorsColor.GREEN is None):
-                GPIO.output(self.pinsColor.GREEN, GPIO.LOW)
+                    or (len(oscillators) > 1 and oscillators[Color.GREEN] is None):
+                GPIO.output(self.pins[Color.GREEN], GPIO.HIGH)
             elif len(oscillators) > 1 and oscillators[Color.GREEN] is not None:
                 if oscillators is not None \
                         and not isinstance(oscillators[Color.GREEN], Oscillator):
@@ -72,7 +72,7 @@ class Indicator:
             if oscillators is None \
                     or len(oscillators) is 0 \
                     or (len(oscillators) > 2 and oscillators[Color.BLUE] is None):
-                GPIO.output(self.pinsColor.BLUE, GPIO.LOW)
+                GPIO.output(self.pins[Color.BLUE], GPIO.HIGH)
             elif len(oscillators) > 2 and oscillators[Color.BLUE] is not None:
                 if oscillators is not None \
                         and not isinstance(oscillators[Color.BLUE], Oscillator):

@@ -13,14 +13,62 @@ class EventDispatchFailedError(RuntimeError):
         self.category = 'error'
         self.message = message
 
-    def __repr__(self):
+    def __str__(self):
         return f'EventDispatchFailedError(message={self.message})'
 
-    def __str__(self):
-        return json.dumps({
+    def __iter__(self):
+        return iter({
             'category': self.category,
             'message': self.message,
-        })
+        }.items())
+
+class BuzzerEvent(Event):
+    def __init__(self, rawEvent, buzzer):
+        self.action = rawEvent.action
+        self._buzzer = buzzer
+
+    def dispatch(self):
+        if self.action == 'power_on':
+            self._buzzer.power_on()
+        elif self.action == 'power_off':
+            self._buzzer.power_off()
+        else:
+            raise EventDispatchFailedError(f'Unhandled action: {self.action}')
+
+    def __str__(self):
+        return f'BuzzerEvent(action={self.action})'
+
+class HeadlightEvent(Event):
+    def __init__(self, rawEvent, headlights):
+        self.action = rawEvent.action
+        self._headlights = headlights
+
+    def dispatch(self):
+        if self.action == 'power_on':
+            self._headlights.power_on()
+        elif self.action == 'power_off':
+            self._headlights.power_off()
+        else:
+            raise EventDispatchFailedError(f'Unhandled action: {self.action}')
+
+    def __str__(self):
+        return f'HeadlightEvent(action={self.action})'
+
+class IndicatorEvent(Event):
+    def __init__(self, rawEvent, indicator):
+        self.action = rawEvent.action
+        self._indicator = indicator
+
+    def dispatch(self):
+        if self.action == 'power_on':
+            self._indicator.power_on()
+        elif self.action == 'power_off':
+            self._indicator.power_off()
+        else:
+            raise EventDispatchFailedError(f'Unhandled action: {self.action}')
+
+    def __str__(self):
+        return f'IndicatorEvent(action={self.action})'
 
 class WheelEvent(Event):
     def __init__(self, rawEvent, wheels):
@@ -41,47 +89,6 @@ class WheelEvent(Event):
             logger.warning(f'Unhandled action: {self.action}')
         self._wheels.stop()
 
-    def __repr__(self):
+    def __str__(self):
         return (f'WheelEvent(action={self.action}, '
                 f'timeout={self.timeout})')
-
-    def __str__(self):
-        return self.__repr(self)
-
-class HeadlightEvent(Event):
-    def __init__(self, rawEvent, headlights):
-        self.action = rawEvent.action
-        self._headlights = headlights
-
-    def dispatch(self):
-        if self.action == 'power_on':
-            self._headlights.power_on()
-        elif self.action == 'power_off':
-            self._headlights.power_off()
-        else:
-            raise EventDispatchFailedError(f'Unhandled action: {self.action}')
-
-    def __repr__(self):
-        return (f'HeadlightEvent(action={self.action})')
-
-    def __str__(self):
-        return self.__repr(self)
-
-class BuzzerEvent(Event):
-    def __init__(self, rawEvent, buzzer):
-        self.action = rawEvent.action
-        self._buzzer = buzzer
-
-    def dispatch(self):
-        if self.action == 'power_on':
-            self._buzzer.power_on()
-        elif self.action == 'power_off':
-            self._buzzer.power_off()
-        else:
-            raise EventDispatchFailedError(f'Unhandled action: {self.action}')
-
-    def __repr__(self):
-        return (f'BuzzerEvent(action={self.action})')
-
-    def __str__(self):
-        return self.__repr(self)
