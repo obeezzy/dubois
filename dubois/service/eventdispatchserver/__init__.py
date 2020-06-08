@@ -59,7 +59,7 @@ class EventDispatchServerThread(Thread):
                 if rawEvent.category == 'buzzer':
                     BuzzerEvent(rawEvent, _buzzer).dispatch()
                     _aggregate.buzzer_state.last_action = rawEvent.action
-                    await _self._broadcast(json.dumps(dict(_aggregate.buzzer_state)))
+                    await self._broadcast(json.dumps(dict(_aggregate.buzzer_state)))
                 elif rawEvent.category == 'headlight':
                     HeadlightEvent(rawEvent, _headlights).dispatch()
                     _aggregate.headlight_state.last_action = rawEvent.action
