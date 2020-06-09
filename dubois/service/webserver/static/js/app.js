@@ -1,5 +1,5 @@
 import { VirtualJoystick } from './vendor/virtualjoystick.js';
-import { robot } from './robot.js';
+import { robot, Constants } from './robot.js';
 import { BuzzerEvent, HeadlightEvent, IndicatorEvent, WheelEvent } from './_events.js';
 import { BuzzerState, ErrorState, HeadlightState, IndicatorState } from './_states.js';
 
@@ -78,13 +78,19 @@ const applyIndicatorState = (state) => {
 };
 
 document.getElementById('buzzer').addEventListener('click', (event) => {
+    event.preventDefault();
     duboisClient.send(new BuzzerEvent(robot.buzzerState.pinActive ? 'power_off' : 'power_on' ));
+    navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 });
 
 document.getElementById('headlight').addEventListener('click', (event) => {
+    event.preventDefault();
     duboisClient.send(new HeadlightEvent(robot.headlightState.pinActive ? 'power_off' : 'power_on' ));
+    navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 });
 
 document.getElementById('indicator').addEventListener('click', (event) => {
+    event.preventDefault();
     duboisClient.send(new IndicatorEvent(robot.indicatorState.anyPinActive ? 'power_off' : 'power_on' ));
+    navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 });
