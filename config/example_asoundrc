@@ -1,0 +1,28 @@
+pcm.!default {
+    type asym
+    capture.pcm "mic"
+    playback.pcm "speaker"
+}
+
+pcm.speaker {
+    type plug
+    slave.pcm {
+        type bluealsa
+        device "58:08:A0:83:0E:1A"
+        profile "a2dp"
+    }
+}
+
+pcm.mic {
+    type plug
+    slave.pcm {
+        type bluealsa
+        device "58:08:A0:83:0E:1A"
+        profile "sco"
+    }
+
+}
+
+ctl.!default {
+    type bluealsa
+}

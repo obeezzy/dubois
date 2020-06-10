@@ -5,10 +5,10 @@ Dubois allows you to build a robot from scratch without having to follow strict 
 # Features
 ### Current
 - Full motion control through the web client
+- Headlight control
 
 ### Future
 - Speed control through PWM
-- Headlight control
 - Recording, taking snapshots and streaming video through Raspberry Pi camera
 - Motion detection
 - Obstacle detection
@@ -24,7 +24,7 @@ Dubois allows you to build a robot from scratch without having to follow strict 
 - Create a file called "wpa_supplicant.conf" with the following details:
 ```
 country=US
-ctrl_interfac=DIR=/var/run/wpa_supplicant GROUP=netdev
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 network={
     ssid="MyWifiNetwork"
@@ -42,6 +42,15 @@ $ sudo raspi-config
 - Select ***Interfacing Options > Pi Camera***
 - Enable camera.
 
+## Set up Bluetooth (optional).
+- Install BlueZ and BlueAlsa.
+```sh
+$ sudo apt-get install bluez bluealsa
+```
+- Scan for your Bluetooth speaker using `bluetoothctl`. Connect to the speaker.
+- Test speaker output by running `speaker-test`.
+- Test microphone input by running `arecord -D mic -d 5 -f cd test.wav -c 1` with any WAV file called `test.wav`.
+
 ## Set up environment.
 - SSH into the Pi. The default password is "raspberry".
 ```sh
@@ -56,7 +65,7 @@ $ sudo apt install rpi.gpio
 
 # Python dependencies
 $ sudo pip3 install flask
-$ sudo pip3 install flask-socketio
+$ sudo pip3 install websockets
 ```
 
 ## Finally, set up Dubois.
@@ -77,7 +86,7 @@ If you complete these steps without error, then congratulations, you have succes
 - Connect your computer/phone to the same Wi-Fi used by Dubois.
 - Connect to the web client by typing the following in the address bar of the browser of your choice on your computer/phone:
 ```sh
-<pi-address>:5000
+<pi-address>:4200
 ```
 where **<pi-address>** should be replaced by the IP address of the Raspberry Pi.
 
