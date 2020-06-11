@@ -45,4 +45,5 @@ echo "Granting permission to service..."
 chmod 644 /etc/systemd/system/dubois.service
 echo "Enabling service..."
 systemctl enable dubois
-echo "Done! Please run 'sudo reboot' to reboot your device."
+echo "Done!"
+echo "Run 'sudo reboot' to reboot your device."
