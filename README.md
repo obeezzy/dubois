@@ -18,10 +18,10 @@ Dubois allows you to build a robot from scratch without having to follow strict 
 
 # Getting started
 ## Setup Wi-Fi and SSH.
-- Download the [latest Raspbian image](https://www.raspberrypi.org/downloads/raspbian).
+- Download the [latest Raspberry Pi OS Lite image](https://www.raspberrypi.org/downloads/raspberry-pi-os).
 - Burn the image to a microSD card of your choice (at least 2GB in size).
 - Mount the microSD card. Navigate to `/boot`.
-- Create a file called "wpa_supplicant.conf" with the following details:
+- Configure the Wi-Fi settings on the Pi. Create a file called `wpa_supplicant.conf` with the following details:
 ```
 country=US
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -32,54 +32,49 @@ network={
     key_mgmt=WPA-PSK
 }
 ```
-- Create a file called "ssh" in the same directory.
-
-## Set up Pi camera.
-- Open ***raspi-config***.
-```sh
-$ sudo raspi-config
-```
-- Select ***Interfacing Options > Pi Camera***
-- Enable camera.
-
-## Set up Bluetooth (optional).
-- Install BlueZ and BlueAlsa.
-```sh
-$ sudo apt-get install bluez bluealsa
-```
-- Scan for your Bluetooth speaker using `bluetoothctl`. Connect to the speaker.
-- Test speaker output by running `speaker-test`.
-- Test microphone input by running `arecord -D mic -d 5 -f cd test.wav -c 1` with any WAV file called `test.wav`.
+- Enable SSH. Create a file called `ssh` in the same directory.
 
 ## Set up environment.
-- SSH into the Pi. The default password is "raspberry".
+- SSH into the Pi. The default password is `raspberry`.
 ```sh
 $ ssh pi@raspberrypi.local
 ```
 - Download and install dependencies.
 ```sh
-$ sudo apt update
+$ sudo apt update && sudo apt upgrade
 $ sudo apt install python3-pip
 $ sudo apt install python3-picamera
 $ sudo apt install rpi.gpio
+$ sudo apt install git
 
 # Python dependencies
 $ sudo pip3 install flask
 $ sudo pip3 install websockets
 ```
 
+## Set up Pi camera and SPI.
+SPI is needed to receive input.
+NOTE: The Pi camera feature is yet to be added.
+- Open ***raspi-config***.
+```sh
+$ sudo raspi-config
+```
+- Select ***Interfacing Options > Pi Camera***
+- Enable camera.
+- Select ***Interfacing Options > SPI***.
+- Enable SPI.
+
 ## Finally, set up Dubois.
-To set up, you must clone the repository, run `install_service.sh` and reboot the Pi.
+First, retrieve your device's IP address. This is required to connect to the device through a browser later.
+```sh
+$ hostname -I
+```
+Now clone the repository, run `install_service.sh` and reboot the Pi.
 ```sh
 $ git clone https://www.github.com/obeezzy/dubois.git
 $ cd dubois
 $ sudo ./install_service.sh
 $ sudo reboot
-```
-Once booted, reconnect to Pi and retrieve hostname.
-```sh
-$ ssh pi@raspberrypi.local
-$ hostname -I
 ```
 
 If you complete these steps without error, then congratulations, you have successfully set up Dubois! To control Dubois, you need to:
@@ -90,8 +85,30 @@ If you complete these steps without error, then congratulations, you have succes
 ```
 where **<pi-address>** should be replaced by the IP address of the Raspberry Pi.
 
+## Set up Bluetooth (optional).
+A Bluetooth speaker can be connect to Dubois as well. This later would be used for providing AI services.
+- Install BlueAlsa.
+```sh
+$ sudo apt-get install bluealsa
+```
+- Start an instance of the BlueZ shell: `sudo bluetoothctl`.
+- Turn off your Bluetooth speaker. This makes it easier to detect later on.
+- While still in `bluetoothctl`, scan for devices: `scan on`.
+- After about 3 seconds, turn on Bluetooth speaker. The speaker's device name should pop up within a few seconds.
+- Pair with device using its MAC address: `pair XX:XX:XX:XX:XX:XX`, where `XX:XX:XX:XX:XX:XX` represents your Bluetooth speaker's MAC address.
+- Trust the speaker (if you do): `trust XX:XX:XX:XX:XX:XX`.
+- Connect to the speaker using `connect XX:XX:XX:XX:XX:XX`. If this attempt fails, run `sudo reboot` and try again.
+- Copy `config/example_asoundrc` from the `dubois` folder to `~/.asoundrc`.
+- Modify `~/.asoundrc` using your favorite editor. Replace all MAC address occurrences with your speaker's MAC address.
+- Download a test `wav` file: `wget -O /tmp/test.wav https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav`
+- Test Bluetooth speaker output: `aplay -D speaker /tmp/test.wav`.
+- Test Bluetooth microphone input: `arecord -D mic -d 5 -f cd test.wav -c 1`.
+- Test playback after recording: `aplay -D speaker test.wav`.
+
+
 # Software Architecture
-Dubois is written mostly in **Python**. The **Flask** framework is used for the server. There is also a Web client written in HTML that is used as a convenient way to control Dubois without having to install the client on your phone.
+Dubois is written mostly in **Python**. The **Flask** framework is used for the server.
+There is also a Web client written in HTML5, CSS3 and JavaScript (ES7) that is used as a convenient way to control Dubois without having to install the client on your phone.
 
 ### Flowchart
 Coming soon.
