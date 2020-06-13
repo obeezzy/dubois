@@ -25,6 +25,13 @@ export class HeadlightState extends State {
         this.pinActive = stateData.pinActive || false;
         this.oscillator = stateData.oscillator || null;
     }
+
+    toString() {
+        return JSON.stringify({
+            pinActive: this.pinActive,
+            oscillator: this.oscillator,
+        });
+    }
 }
 
 export class IndicatorState extends State {

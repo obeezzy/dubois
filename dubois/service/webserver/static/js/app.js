@@ -1,3 +1,4 @@
+import { HeadlightSheet, ToggleSwitch } from './components/ui.js';
 import { VirtualJoystick } from './vendor/virtualjoystick.js';
 import { robot, Constants } from './robot.js';
 import { DuboisClient } from './network.js';
@@ -44,12 +45,18 @@ customElements.define('joystick-area',
     }
 );
 
+customElements.define('headlight-sheet', HeadlightSheet);
+customElements.define('toggle-switch', ToggleSwitch);
+
 const applyBuzzerState = (state) => {
     robot.buzzerState = state;
 }
 
 const applyHeadlightState = (state) => {
     robot.headlightState = state;
+//    const sheet = document.querySelector('headlight-sheet');
+//    if (sheet)
+//        sheet.state = state.toString();
 };
 
 const applyIndicatorState = (state) => {
@@ -64,8 +71,21 @@ document.getElementById('buzzer').addEventListener('click', (event) => {
 
 document.getElementById('headlight').addEventListener('click', (event) => {
     event.preventDefault();
-    duboisClient.send(new HeadlightEvent(robot.headlightState.pinActive ? 'power_off' : 'power_on' ));
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
+
+    let sheet = document.querySelector('headlight-sheet');
+    if (sheet) {
+        document.getElementById('headlight').removeAttribute('panel__item--selected');
+        sheet.open = false;
+    } else {
+        sheet = new HeadlightSheet();
+        sheet.state = robot.headlightState.toString();
+        document.querySelector('.panel').before(sheet);
+        document.getElementById('headlight').setAttribute('panel__item--selected', '');
+        sheet.powerSwitch.addEventListener('click', (e) => {
+            duboisClient.send(new HeadlightEvent(robot.headlightState.pinActive ? 'power_off' : 'power_on' ));
+        });
+    }
 });
 
 document.getElementById('indicator').addEventListener('click', (event) => {
