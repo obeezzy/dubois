@@ -1,8 +1,12 @@
 # Dubois
-![HTML5 logo](https://github.com/obeezzy/dubois/blob/add-logos/docs/images/html5-logo.svg)
-![CSS3 logo](https://github.com/obeezzy/dubois/blob/add-logos/docs/images/css3-logo.svg)
-![JS logo](https://github.com/obeezzy/dubois/blob/add-logos/docs/images/js-logo.svg)
-![Python logo](https://github.com/obeezzy/dubois/blob/add-logos/docs/images/python-logo.svg)
+<img alt='HTML5 logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/html5-logo.svg'>
+<span style='font-size: 40px'>+</span>
+<img alt='CSS3 logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/css3-logo.svg'>
+<span style='font-size: 40px'>+</span>
+<img alt='JS logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/js-logo.svg'>
+<span style='font-size: 40px'>+</span>
+<img alt='Python logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/python-logo.svg'>
+<br/>
 Dubois is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
 Dubois allows you to build a robot from scratch without having to follow strict guidelines or using specific parts. It grants the creator full control of the building process. These principles can be applied to tiny cheap affordable robots and bigger more sophisticated ones.
 
