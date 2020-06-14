@@ -1,11 +1,11 @@
 # Dubois
 <div style='dislay: inline'>
 <img alt='Python logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/python-logo.svg' width='96' height='96'>
-<img alt='Raspberry Pi logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/pi-logo.svg' width='96' height='96'>
+<img alt='Raspberry Pi logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/pi-logo.svg' width='76' height='96'>
 <img alt='HTML5 logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/html5-logo.svg' width='96' height='96'>
 <img alt='CSS3 logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/css3-logo.svg' width='96' height='96'>
 <img alt='JS logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/js-logo.svg' width='96' height='96'>
-<img alt='Arrow sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/equal-sign.svg' width='64' height='64'>
+<img alt='Arrow sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/arrow-sign.svg' width='64' height='64'>
 <img alt='Robot' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/robot.png' width='96' height='96'>
 </div>
 Dubois is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
