@@ -8,7 +8,8 @@
 <img alt='Arrow sign' src='https://github.com/obeezzy/dubois/blob/master/docs/images/arrow-sign.svg' width='64' height='64'>
 <img alt='Robot' src='https://github.com/obeezzy/dubois/blob/master/docs/images/robot.png' width='96' height='96'>
 </div>
-Dubois (* pronounced "doob" + "WAA" *) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
+
+Dubois (*pronounced "doob" + "WAA"*) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
 Dubois allows you to build a robot from scratch without having to follow strict guidelines or using specific parts. It grants the creator full control of the building process. These principles can be applied to tiny cheap affordable robots and bigger more sophisticated ones.
 
 # Features
