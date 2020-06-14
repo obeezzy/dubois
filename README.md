@@ -8,7 +8,7 @@
 <img alt='Arrow sign' src='https://github.com/obeezzy/dubois/blob/master/docs/images/arrow-sign.svg' width='64' height='64'>
 <img alt='Robot' src='https://github.com/obeezzy/dubois/blob/master/docs/images/robot.png' width='96' height='96'>
 </div>
-Dubois (*pronounced "doob" + "WAA"*) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
+Dubois (_pronounced "doob" + "WAA"_) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
 Dubois allows you to build a robot from scratch without having to follow strict guidelines or using specific parts. It grants the creator full control of the building process. These principles can be applied to tiny cheap affordable robots and bigger more sophisticated ones.
 
 # Features
@@ -115,15 +115,15 @@ $ sudo apt-get install bluealsa
 - Test playback after recording: `aplay -D speaker test.wav`.
 
 # Software Architecture
-**Dubois** comprises of 3 parts:
+**Dubois** comprises of **3 parts**:
 
-## The service
+### The service
 Server running in the background awaiting commands from a user. Written in **Python**.
 
-## The shell
+### The shell
 Command-line interface used for directly interacting with the service and scripting. Written in **Python**.
 
-## The web client
+### The web client
 Web appliction used as a remote control. Written in ***HTML5***, ***CSS3*** and vanilla ***JavaScript*** (ES7).
 
 # Hardware Architecture
