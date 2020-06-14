@@ -8,7 +8,7 @@
 <img alt='Arrow sign' src='https://github.com/obeezzy/dubois/blob/master/docs/images/arrow-sign.svg' width='64' height='64'>
 <img alt='Robot' src='https://github.com/obeezzy/dubois/blob/master/docs/images/robot.png' width='96' height='96'>
 </div>
-Dubois is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
+Dubois (*pronounced "doob" + "WAA"*) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
 Dubois allows you to build a robot from scratch without having to follow strict guidelines or using specific parts. It grants the creator full control of the building process. These principles can be applied to tiny cheap affordable robots and bigger more sophisticated ones.
 
 # Features
@@ -114,13 +114,17 @@ $ sudo apt-get install bluealsa
 - Test Bluetooth microphone input: `arecord -D mic -d 5 -f cd test.wav -c 1`.
 - Test playback after recording: `aplay -D speaker test.wav`.
 
-
 # Software Architecture
-Dubois is written mostly in **Python**. The **Flask** framework is used for the server.
-There is also a Web client written in HTML5, CSS3 and JavaScript (ES7) that is used as a convenient way to control Dubois without having to install the client on your phone.
+**Dubois** comprises of 3 parts:
 
-### Flowchart
-Coming soon.
+## The service
+Server running in the background awaiting commands from a user. Written in **Python**.
+
+## The shell
+Command-line interface used for directly interacting with the service and scripting. Written in **Python**.
+
+## The web client
+Web appliction used as a remote control. Written in ***HTML5***, ***CSS3*** and vanilla ***JavaScript*** (ES7).
 
 # Hardware Architecture
 ### Circuit Diagram
