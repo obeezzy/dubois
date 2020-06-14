@@ -1,13 +1,13 @@
 # Dubois
 <div style='dislay: inline'>
 <img alt='HTML5 logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/html5-logo.svg' width='96' height='96'>
-<img alt='Plus sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/plus-sign.svg' width='16' height='16'>
+<img alt='Plus sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/plus-sign.svg' width='16' height='16' style='padding-bottom: 40px'>
 <img alt='CSS3 logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/css3-logo.svg' width='96' height='96'>
-<img alt='Plus sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/plus-sign.svg' width='16' height='16'>
+<img alt='Plus sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/plus-sign.svg' width='16' height='16' style='padding-bottom: 40px'>
 <img alt='JS logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/js-logo.svg' width='96' height='96'>
-<img alt='Plus sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/plus-sign.svg' width='16' height='16'>
+<img alt='Plus sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/plus-sign.svg' width='16' height='16' style='padding-bottom: 40px'>
 <img alt='Python logo' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/python-logo.svg' width='96' height='96'>
-<img alt='Equal sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/equal-sign.svg' width='16' height='16'>
+<img alt='Equal sign' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/equal-sign.svg' width='64' height='64' style='padding-bottom: 40px'>
 <img alt='Robot' src='https://github.com/obeezzy/dubois/blob/add-logos/docs/images/robot.png' width='96' height='96'>
 </div>
 Dubois is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
