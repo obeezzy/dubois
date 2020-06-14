@@ -8,22 +8,26 @@
 <img alt='Arrow sign' src='https://github.com/obeezzy/dubois/blob/master/docs/images/arrow-sign.svg' width='64' height='64'>
 <img alt='Robot' src='https://github.com/obeezzy/dubois/blob/master/docs/images/robot.png' width='96' height='96'>
 </div>
-Dubois (*pronounced "doob" + "WAA"*) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
+
+**Dubois** (*pronounced "doob" + "WAA"*) is a DIY robot. It is designed to be fully customizable and modular, making it easy to upgrade (or downgrade) if you need to.
 Dubois allows you to build a robot from scratch without having to follow strict guidelines or using specific parts. It grants the creator full control of the building process. These principles can be applied to tiny cheap affordable robots and bigger more sophisticated ones.
 
 # Features
 ### Current
 - Full motion control through the web client
 - Headlight control
+- Buzzer control
+- Indicator control
+- Extensive *oscillator* library for various flash and beep patterns
 
 ### Future
 - Speed control through PWM
+- More oscillators!
 - Recording, taking snapshots and streaming video through Raspberry Pi camera
 - Motion detection
-- Obstacle detection
-- Sensor support
-- Measure battery life and notify user when battery levels drop.
-- Add AI so it can be commanded through voice.
+- Sensor support through connected ADC
+- Battery life meter
+- Voice-activated AI
 
 # Getting started
 ## Setup Wi-Fi and SSH.
@@ -115,16 +119,16 @@ $ sudo apt-get install bluealsa
 - Test playback after recording: `aplay -D speaker test.wav`.
 
 # Software Architecture
-**Dubois** comprises of 3 parts:
+**Dubois** comprises of **3 parts**:
 
-## The service
+### The service
 Server running in the background awaiting commands from a user. Written in **Python**.
 
-## The shell
+### The shell
 Command-line interface used for directly interacting with the service and scripting. Written in **Python**.
 
-## The web client
-Web appliction used as a remote control. Written in ***HTML5***, ***CSS3*** and vanilla ***JavaScript*** (ES7).
+### The web client
+Web appliction used as a remote control. Written in **HTML5**, **CSS3** and vanilla **JavaScript** (ES7).
 
 # Hardware Architecture
 ### Circuit Diagram
@@ -147,6 +151,7 @@ You will need the [Actobotics Peewee Runt Rover Kit](https://www.microcenter.com
 # Todo
 - Add documentation describing full workings of the system.
 - Simplify setup process.
+- Add pictures.
 
 # License
 MIT
