@@ -21,7 +21,7 @@ ${css}
 <div class='sheet'>
     <div class='sheet__item'>
         <label class='sheet__item__label' for='powerSwitch'>Power</label>
-        <toggle-switch class='sheet__item__switch' id='powerSwitch'></toggle-switch>
+        <toggle-switch class='sheet__item__switch'></toggle-switch>
     </div>
 </div>`;
 
@@ -33,26 +33,37 @@ export default class HeadlightSheet extends Sheet {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
         shadow.appendChild(template.content.cloneNode(true));
+        this.shadowRoot.querySelector('toggle-switch').addEventListener('toggle', (e) => {
+            const event = new CustomEvent('pinActiveChange', {
+                bubbles: true,
+                cancelable: false,
+            });
+            this.pinActive = e.target.active;
+            this.dispatchEvent(event);
+        });
     }
 
     get pinActive() {
-        return this.shadowRoot.querySelector('#powerSwitch').checked;
+        return this.hasAttribute('pinActive');
     }
 
     set pinActive(val) {
-        this.shadowRoot.querySelector('#powerSwitch').checked = val;
+        console.log('HeadlightSheet.pinActive', val);
+        if (val)
+            this.setAttribute('pinActive', '');
+        else
+            this.removeAttribute('pinActive');
+
+        this.shadowRoot.querySelector('toggle-switch').active = val;
     }
 
     set state(val) {
-        const newState = JSON.parse(val);
-        if ('pinActive' in newState)
+        const newState = JSON.parse(val.toString());
+        if ('pinActive' in newState) {
             this.pinActive = newState.pinActive;
-        if ('oscillator' in newState)
+        }
+        if ('oscillator' in newState) {
             this.oscillator = newState.oscillator;
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        this.powerSwitch = this.shadowRoot.querySelector('#powerSwitch');
+        }
     }
 }

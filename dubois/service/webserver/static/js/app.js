@@ -15,6 +15,10 @@ duboisClient.onrecv = (remoteState) => {
         applyIndicatorState(new IndicatorState(remoteState));
     } else if (remoteState.category == 'error') {
         console.error('Error state received:', remoteState.message);
+    } else if (remoteState.category == 'aggregate') {
+        applyBuzzerState(new BuzzerState(remoteState.states.buzzer));
+        applyHeadlightState(new HeadlightState(remoteState.states.headlight));
+        applyIndicatorState(new IndicatorState(remoteState.states.indicator));
     }
 };
 
@@ -54,42 +58,42 @@ const applyBuzzerState = (state) => {
 
 const applyHeadlightState = (state) => {
     robot.headlightState = state;
-//    const sheet = document.querySelector('headlight-sheet');
-//    if (sheet)
-//        sheet.state = state.toString();
+    const sheet = document.querySelector('headlight-sheet');
+    if (sheet)
+        sheet.state = state;
 };
 
 const applyIndicatorState = (state) => {
     robot.indicatorState = state;
 };
 
-document.getElementById('buzzer').addEventListener('click', (event) => {
-    event.preventDefault();
+document.getElementById('buzzerButton').addEventListener('click', (e) => {
+    e.preventDefault();
     duboisClient.send(new BuzzerEvent(robot.buzzerState.pinActive ? 'power_off' : 'power_on' ));
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 });
 
-document.getElementById('headlight').addEventListener('click', (event) => {
-    event.preventDefault();
+document.getElementById('headlightButton').addEventListener('click', (e) => {
+    e.preventDefault();
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 
     let sheet = document.querySelector('headlight-sheet');
     if (sheet) {
-        document.getElementById('headlight').removeAttribute('panel__item--selected');
+        e.target.removeAttribute('panel__item--selected');
         sheet.open = false;
     } else {
         sheet = new HeadlightSheet();
-        sheet.state = robot.headlightState.toString();
+        sheet.state = robot.headlightState;
         document.querySelector('.panel').before(sheet);
-        document.getElementById('headlight').setAttribute('panel__item--selected', '');
-        sheet.powerSwitch.addEventListener('click', (e) => {
-            duboisClient.send(new HeadlightEvent(robot.headlightState.pinActive ? 'power_off' : 'power_on' ));
+        e.target.setAttribute('panel__item--selected', '');
+        sheet.addEventListener('pinActiveChange', (e) => {
+            duboisClient.send(new HeadlightEvent(e.target.pinActive ? 'power_on' : 'power_off' ));
         });
     }
 });
 
-document.getElementById('indicator').addEventListener('click', (event) => {
-    event.preventDefault();
+document.getElementById('indicatorButton').addEventListener('click', (e) => {
+    e.preventDefault();
     duboisClient.send(new IndicatorEvent(robot.indicatorState.anyPinActive ? 'power_off' : 'power_on' ));
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 });
