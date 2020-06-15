@@ -22,7 +22,7 @@ duboisClient.onrecv = (remoteState) => {
     }
 };
 
-customElements.define('joystick-area',
+customElements.define('dbs-joystick-area',
     class extends HTMLElement {
         constructor() {
             super();
@@ -49,8 +49,8 @@ customElements.define('joystick-area',
     }
 );
 
-customElements.define('headlight-sheet', HeadlightSheet);
-customElements.define('toggle-switch', ToggleSwitch);
+customElements.define('dbs-headlight-sheet', HeadlightSheet);
+customElements.define('dbs-toggle-switch', ToggleSwitch);
 
 const applyBuzzerState = (state) => {
     robot.buzzerState = state;
@@ -58,7 +58,7 @@ const applyBuzzerState = (state) => {
 
 const applyHeadlightState = (state) => {
     robot.headlightState = state;
-    const sheet = document.querySelector('headlight-sheet');
+    const sheet = document.querySelector('dbs-headlight-sheet');
     if (sheet)
         sheet.state = state;
 };
@@ -77,7 +77,7 @@ document.getElementById('headlightButton').addEventListener('click', (e) => {
     e.preventDefault();
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
 
-    let sheet = document.querySelector('headlight-sheet');
+    let sheet = document.querySelector('dbs-headlight-sheet');
     if (sheet) {
         e.target.removeAttribute('panel__item--selected');
         sheet.open = false;
