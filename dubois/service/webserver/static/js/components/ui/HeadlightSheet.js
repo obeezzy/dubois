@@ -21,7 +21,7 @@ ${css}
 <div class='sheet'>
     <div class='sheet__item'>
         <label class='sheet__item__label' for='powerSwitch'>Power</label>
-        <toggle-switch class='sheet__item__switch'></toggle-switch>
+        <dbs-toggle-switch class='sheet__item__switch'></dbs-toggle-switch>
     </div>
 </div>`;
 
@@ -33,7 +33,7 @@ export default class HeadlightSheet extends Sheet {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
         shadow.appendChild(template.content.cloneNode(true));
-        this.shadowRoot.querySelector('toggle-switch').addEventListener('toggle', (e) => {
+        this.shadowRoot.querySelector('dbs-toggle-switch').addEventListener('toggle', (e) => {
             const event = new CustomEvent('pinActiveChange', {
                 bubbles: true,
                 cancelable: false,
@@ -54,7 +54,7 @@ export default class HeadlightSheet extends Sheet {
         else
             this.removeAttribute('pinActive');
 
-        this.shadowRoot.querySelector('toggle-switch').active = val;
+        this.shadowRoot.querySelector('dbs-toggle-switch').active = val;
     }
 
     set state(val) {
