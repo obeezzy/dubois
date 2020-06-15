@@ -44,7 +44,7 @@ input:checked + .slider {
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px var(--secondary-color-light);
 }
 
 input:checked + .slider:before {
@@ -68,7 +68,7 @@ const html = `
 ${css}
 </style>
 <label class='switch'>
-    <input type='checkbox' id='checkbox'>
+    <input type='checkbox'>
     <span class='slider round'></span>
 </label>
 `;
@@ -81,20 +81,30 @@ export default class ToggleSwitch extends HTMLElement {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
         shadow.appendChild(template.content.cloneNode(true));
-        shadow.querySelector('#checkbox').addEventListener('click', (event) => {
-            event.preventDefault();
-            this.checked = event.target.checked;
+        this.shadowRoot.querySelector('input[type]').addEventListener('click', (e) => {
+            const event = new CustomEvent('toggle', {
+                bubbles: true,
+                cancelable: false,
+            });
+            this.active = e.target.checked;
+            this.dispatchEvent(event);
         });
     }
 
-    get checked() {
-        return this.hasAttribute('checked');
+    get active() {
+        return this.hasAttribute('active');
     }
     
-    set checked(val) {
+    set active(val) {
         if (val)
-            this.setAttribute('checked', '');
+            this.setAttribute('active', '');
         else
-            this.removeAttribute('checked');
+            this.removeAttribute('active');
+
+        this.shadowRoot.querySelector('input[type]').checked = val;
+    }
+
+    connectedCallback() {
+        this.shadowRoot.querySelector('input[type]').checked = this.active;
     }
 }

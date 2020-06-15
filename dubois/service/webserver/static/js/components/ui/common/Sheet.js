@@ -13,6 +13,10 @@ const shadowCss = `
 
 :host([open]) {
     top: calc(100vh - 300px);
+}
+
+:host([hidden]) {
+    display: none;
 }`;
 
 export const css = `
@@ -27,6 +31,7 @@ ${shadowCss}
 export default class Sheet extends HTMLElement {
     constructor() {
         super();
+        setTimeout(() => { this.open = true; }, 10);
     }
 
     get open() {
@@ -41,9 +46,5 @@ export default class Sheet extends HTMLElement {
             this.addEventListener('webkitTransitionEnd', () => this.remove());
             this.removeAttribute('open');
         }
-    }
-
-    connectedCallback() {
-        setTimeout(() => { this.open = true; }, 10);
     }
 }
