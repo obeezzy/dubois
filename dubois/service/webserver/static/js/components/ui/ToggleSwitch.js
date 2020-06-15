@@ -86,7 +86,7 @@ export default class ToggleSwitch extends HTMLElement {
                 bubbles: true,
                 cancelable: false,
             });
-            this.active = e.target.checked;
+            this.active = e.currentTarget.checked;
             this.dispatchEvent(event);
         });
     }

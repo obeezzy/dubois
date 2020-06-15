@@ -79,15 +79,16 @@ document.getElementById('headlightButton').addEventListener('click', (e) => {
 
     let sheet = document.querySelector('dbs-headlight-sheet');
     if (sheet) {
-        e.target.removeAttribute('panel__item--selected');
+        e.currentTarget.classList.remove('panel__item--selected');
         sheet.open = false;
     } else {
         sheet = new HeadlightSheet();
         sheet.state = robot.headlightState;
         document.querySelector('.panel').before(sheet);
-        e.target.setAttribute('panel__item--selected', '');
+        e.currentTarget.classList.add('panel__item--selected');
         sheet.addEventListener('pinActiveChange', (e) => {
-            duboisClient.send(new HeadlightEvent(e.target.pinActive ? 'power_on' : 'power_off' ));
+            duboisClient.send(new HeadlightEvent(e.currentTarget.pinActive ? 'power_on' : 'power_off' ));
+            navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
         });
     }
 });
