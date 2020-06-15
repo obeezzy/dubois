@@ -1,12 +1,13 @@
-import { HeadlightSheet, ToggleSwitch } from './components/ui.js';
+import { BuzzerSheet, HeadlightSheet, IndicatorSheet, ToggleSwitch } from './components/ui.js';
 import { VirtualJoystick } from './vendor/virtualjoystick.js';
-import { robot, Constants } from './robot.js';
+import robot, { Constants } from './robot.js';
 import { DuboisClient } from './network.js';
 import { BuzzerEvent, HeadlightEvent, IndicatorEvent, WheelEvent } from './_events.js';
 import { BuzzerState, ErrorState, HeadlightState, IndicatorState } from './_states.js';
 
 const duboisClient = new DuboisClient();
-duboisClient.onrecv = (remoteState) => {
+duboisClient.addEventListener('recv', (e) => {
+    const remoteState = e.detail;
     if (remoteState.category == 'buzzer') {
         applyBuzzerState(new BuzzerState(remoteState));
     } else if (remoteState.category == 'headlight') {
@@ -20,7 +21,7 @@ duboisClient.onrecv = (remoteState) => {
         applyHeadlightState(new HeadlightState(remoteState.states.headlight));
         applyIndicatorState(new IndicatorState(remoteState.states.indicator));
     }
-};
+});
 
 customElements.define('dbs-joystick-area',
     class extends HTMLElement {
@@ -49,7 +50,9 @@ customElements.define('dbs-joystick-area',
     }
 );
 
+customElements.define('dbs-buzzer-sheet', BuzzerSheet);
 customElements.define('dbs-headlight-sheet', HeadlightSheet);
+customElements.define('dbs-indicator-sheet', IndicatorSheet);
 customElements.define('dbs-toggle-switch', ToggleSwitch);
 
 const applyBuzzerState = (state) => {
@@ -67,10 +70,42 @@ const applyIndicatorState = (state) => {
     robot.indicatorState = state;
 };
 
+const clearSheets = () => {
+    let buzzerSheet = document.querySelector('dbs-buzzer-sheet');
+    let headlightSheet = document.querySelector('dbs-headlight-sheet');
+    let indicatorSheet = document.querySelector('dbs-indicator-sheet');
+
+    if (buzzerSheet)
+        buzzerSheet.open = false;
+    if (headlightSheet)
+        headlightSheet.open = false;
+    if (indicatorSheet)
+        indicatorSheet.open = false;
+
+    let selectedPanelItem = document.querySelector('.panel__item.panel__item--selected');
+    if (selectedPanelItem)
+        selectedPanelItem.classList.remove('panel__item--selected');
+}
+
 document.getElementById('buzzerButton').addEventListener('click', (e) => {
     e.preventDefault();
-    duboisClient.send(new BuzzerEvent(robot.buzzerState.pinActive ? 'power_off' : 'power_on' ));
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
+
+    let sheet = document.querySelector('dbs-buzzer-sheet');
+    if (sheet) {
+        e.currentTarget.classList.remove('panel__item--selected');
+        sheet.open = false;
+    } else {
+        clearSheets();
+        sheet = new BuzzerSheet();
+        sheet.state = robot.buzzerState;
+        document.querySelector('.panel').before(sheet);
+        e.currentTarget.classList.add('panel__item--selected');
+        sheet.addEventListener('pinActiveChange', (e) => {
+            duboisClient.send(new BuzzerEvent(e.currentTarget.pinActive ? 'power_on' : 'power_off' ));
+            navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
+        });
+    }
 });
 
 document.getElementById('headlightButton').addEventListener('click', (e) => {
@@ -82,6 +117,7 @@ document.getElementById('headlightButton').addEventListener('click', (e) => {
         e.currentTarget.classList.remove('panel__item--selected');
         sheet.open = false;
     } else {
+        clearSheets();
         sheet = new HeadlightSheet();
         sheet.state = robot.headlightState;
         document.querySelector('.panel').before(sheet);
@@ -95,6 +131,21 @@ document.getElementById('headlightButton').addEventListener('click', (e) => {
 
 document.getElementById('indicatorButton').addEventListener('click', (e) => {
     e.preventDefault();
-    duboisClient.send(new IndicatorEvent(robot.indicatorState.anyPinActive ? 'power_off' : 'power_on' ));
     navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
+
+    let sheet = document.querySelector('dbs-indicator-sheet');
+    if (sheet) {
+        e.currentTarget.classList.remove('panel__item--selected');
+        sheet.open = false;
+    } else {
+        clearSheets();
+        sheet = new IndicatorSheet();
+        sheet.state = robot.indicatorState;
+        document.querySelector('.panel').before(sheet);
+        e.currentTarget.classList.add('panel__item--selected');
+        sheet.addEventListener('pinActiveChange', (e) => {
+            duboisClient.send(new IndicatorState(e.currentTarget.anyPinActive ? 'power_on' : 'power_off' ));
+            navigator.vibrate(Constants.FEEDBACK_VIBRATION_DURATION);
+        });
+    }
 });

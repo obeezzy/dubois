@@ -8,7 +8,7 @@ class Robot {
     }
 }
 
-export const robot = new Robot();
+export default new Robot();
 export const Color = Object.freeze({'RED': 0, 'GREEN': 1, 'BLUE': 2});
 export const Constants = {
     FEEDBACK_VIBRATION_DURATION: 50,

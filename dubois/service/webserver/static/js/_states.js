@@ -17,6 +17,13 @@ export class BuzzerState extends State {
         this.pinActive = stateData.pinActive || false;
         this.oscillator = stateData.oscillator || null;
     }
+
+    toString() {
+        return JSON.stringify({
+            pinActive: this.pinActive,
+            oscillator: this.oscillator,
+        });
+    }
 }
 
 export class HeadlightState extends State {
@@ -46,5 +53,12 @@ export class IndicatorState extends State {
             return false;
 
         return this.pinsActive.filter(pinActive => pinActive).length > 0;
+    }
+
+    toString() {
+        return JSON.stringify({
+            pinActive: this.pinActive,
+            oscillators: this.oscillators,
+        });
     }
 }
