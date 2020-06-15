@@ -11,6 +11,8 @@ const css = `
 
 .sheet__item__label {
     flex: 1;
+    font-size: 20px;
+    padding-top: 2px;
 }`;
 
 const html = `
@@ -20,8 +22,10 @@ ${css}
 </style>
 <div class='sheet'>
     <div class='sheet__item'>
-        <label class='sheet__item__label' for='powerSwitch'>Power</label>
-        <dbs-toggle-switch class='sheet__item__switch'></dbs-toggle-switch>
+        <label class='sheet__item__label' for='powerSwitch'>
+            Power
+        </label>
+        <dbs-toggle-switch class='sheet__item__switch' id='powerSwitch'></dbs-toggle-switch>
     </div>
 </div>`;
 
@@ -33,12 +37,12 @@ export default class HeadlightSheet extends Sheet {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
         shadow.appendChild(template.content.cloneNode(true));
-        this.shadowRoot.querySelector('dbs-toggle-switch').addEventListener('toggle', (e) => {
+        this.shadowRoot.querySelector('#powerSwitch').addEventListener('toggle', (e) => {
             const event = new CustomEvent('pinActiveChange', {
                 bubbles: true,
                 cancelable: false,
             });
-            this.pinActive = e.target.active;
+            this.pinActive = e.currentTarget.active;
             this.dispatchEvent(event);
         });
     }
@@ -54,7 +58,7 @@ export default class HeadlightSheet extends Sheet {
         else
             this.removeAttribute('pinActive');
 
-        this.shadowRoot.querySelector('dbs-toggle-switch').active = val;
+        this.shadowRoot.querySelector('#powerSwitch').active = val;
     }
 
     set state(val) {

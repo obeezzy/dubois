@@ -101,10 +101,19 @@ h6 {
     list-style-type: none;
     margin: 0;
     padding: 4px;
+
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
 }
 
 .panel__item:active {
-    background-color: var(--secondary-color-light);
+    background-color: rgba(100, 100, 100, .7);
+}
+
+.panel__item--selected {
+    background-color: var(--primary-color-darker);
+    color: var(--secondary-color-light);
 }
 
 .panel__item__icon {
